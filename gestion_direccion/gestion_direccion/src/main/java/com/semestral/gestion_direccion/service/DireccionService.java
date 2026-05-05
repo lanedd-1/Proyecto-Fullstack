@@ -11,7 +11,6 @@ import com.semestral.gestion_direccion.model.Comuna;
 import com.semestral.gestion_direccion.model.Direccion;
 import com.semestral.gestion_direccion.repository.ComunaRepository;
 import com.semestral.gestion_direccion.repository.DireccionRepository;
-import com.semestral.gestion_direccion.repository.RegionRepository;
 
 import lombok.RequiredArgsConstructor;
 

@@ -31,8 +31,7 @@ public class DataInitializer implements CommandLineRunner {
         Region rm = new Region();
         rm.setNombre_region("Metropolitana");
         regionRepository.save(rm);
-
-
+        
         // 3. Crear Comuna (vinculada a la Región)
         Comuna santiago = new Comuna();
         santiago.setNombreC("Santiago");

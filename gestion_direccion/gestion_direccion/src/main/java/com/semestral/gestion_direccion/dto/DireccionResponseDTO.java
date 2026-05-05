@@ -12,5 +12,5 @@ public class DireccionResponseDTO {
     private String calle;
     private String numero;
     private Long id_comuna;
-    private Long id_Region;
+    private Long id_region;
 }

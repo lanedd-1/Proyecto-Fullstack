@@ -18,7 +18,4 @@ public class DireccionRequestDTO {
     @NotNull
     @Positive
     private Long id_comuna;
-    @NotNull
-    @Positive
-    private Long id_estado;
 }

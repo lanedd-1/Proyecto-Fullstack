@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.semestral.gestion_direccion.dto.DireccionRequestDTO;
 import com.semestral.gestion_direccion.dto.DireccionResponseDTO;
-import com.semestral.gestion_direccion.model.Direccion;
 import com.semestral.gestion_direccion.service.DireccionService;
 
 import jakarta.validation.Valid;
@@ -25,10 +24,8 @@ public class DireccionController {
     private final DireccionService direccionService;
     //Metodo GET por id 
     @GetMapping("/{id}")
-    public ResponseEntity<Direccion> obtenerPorId(@PathVariable Long id){
-        return direccionService.obtenerPorId(id)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DireccionResponseDTO> obtenerPorId(@PathVariable Long id){
+        return ResponseEntity.ok(direccionService.obtenerPorId(id));
     }
     //Metodo POST
     @PostMapping("/guardar")
@@ -36,7 +33,7 @@ public class DireccionController {
         return ResponseEntity.status(201).body(direccionService.guardar(dir));
     }
     @GetMapping()
-    public ResponseEntity<List<Direccion>> obtenerTodos(){
+    public ResponseEntity<List<DireccionResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(direccionService.obtenerTodas());
     }
 }

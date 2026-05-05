@@ -1,7 +1,6 @@
 package com.semestral.gestion_direccion.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -21,12 +20,28 @@ public class DireccionService {
     private final ComunaRepository comunaRepository;
 
 
-    public List<Direccion> obtenerTodas(){
-        return direccionRepository.findAll();
-    }
-    public Optional<Direccion> obtenerPorId(Long id){
-        return direccionRepository.findById(id);
-    }
+    public List<DireccionResponseDTO> obtenerTodas() {
+    List<Direccion> direcciones = direccionRepository.findAll();
+
+    return direcciones.stream().map(dir -> new DireccionResponseDTO(
+        dir.getId_direccion(),
+        dir.getCalle(),
+        dir.getNumero(),
+        dir.getComuna().getId_comuna(),
+        dir.getComuna().getRegion().getId_region()
+    )).toList();
+}
+    public DireccionResponseDTO obtenerPorId(Long id) {
+    return direccionRepository.findById(id)
+        .map(dir -> new DireccionResponseDTO(
+            dir.getId_direccion(),
+            dir.getCalle(),
+            dir.getNumero(),
+            dir.getComuna().getId_comuna(),
+            dir.getComuna().getRegion().getId_region()
+        ))
+        .orElseThrow(() -> new RuntimeException("Dirección no encontrada con ID: " + id));
+}
     
     public DireccionResponseDTO guardar(DireccionRequestDTO dto) {
     Comuna comuna = comunaRepository.findById(dto.getId_comuna())

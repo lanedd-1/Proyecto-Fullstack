@@ -1,5 +1,7 @@
 package com.semestral.gestion_direccion.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,5 +34,9 @@ public class DireccionController {
     @PostMapping("/guardar")
     public ResponseEntity <DireccionResponseDTO> crear(@Valid @RequestBody DireccionRequestDTO dir){
         return ResponseEntity.status(201).body(direccionService.guardar(dir));
+    }
+    @GetMapping()
+    public ResponseEntity<List<Direccion>> obtenerTodos(){
+        return ResponseEntity.ok(direccionService.obtenerTodas());
     }
 }

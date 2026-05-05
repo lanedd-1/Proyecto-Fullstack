@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class Comuna {
     @Column(name = "nombre_comuna")
     private String nombreC;
     @ManyToOne
-    @Column(name = "id_region",nullable = false)
+    @JoinColumn(name = "id_region")
     private Region region;
     
 }

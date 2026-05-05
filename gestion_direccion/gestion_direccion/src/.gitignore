@@ -1,0 +1,20 @@
+# Compilados de Java
+*.class
+
+# Carpetas de construcción
+target/
+build/
+out/
+
+# Configuración de VS Code
+.vscode/
+*.code-workspace
+
+# Archivos de sistema y temporales
+.DS_Store
+Thumbs.db
+
+# Configuración de Maven
+.mvn/
+mvnw
+mvnw.cmd

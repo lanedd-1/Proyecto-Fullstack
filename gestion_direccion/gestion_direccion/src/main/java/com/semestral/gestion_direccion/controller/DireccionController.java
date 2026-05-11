@@ -1,9 +1,10 @@
 package com.semestral.gestion_direccion.controller;
 
 import java.util.List;
-
+import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,5 +36,10 @@ public class DireccionController {
     @GetMapping()
     public ResponseEntity<List<DireccionResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(direccionService.obtenerTodas());
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarPorId(@PathVariable Long id){
+    direccionService.eliminar(id);
+    return ResponseEntity.ok("Direccion eliminada.");
     }
 }

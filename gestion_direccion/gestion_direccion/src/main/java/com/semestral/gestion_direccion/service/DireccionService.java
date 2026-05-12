@@ -2,7 +2,6 @@ package com.semestral.gestion_direccion.service;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.semestral.gestion_direccion.dto.DireccionRequestDTO;
@@ -64,5 +63,4 @@ public class DireccionService {
     public void eliminar(Long id){
         direccionRepository.deleteById(id);
     }
-    
 }

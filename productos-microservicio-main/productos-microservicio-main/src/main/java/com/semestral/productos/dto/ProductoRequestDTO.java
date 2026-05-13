@@ -2,10 +2,6 @@ package com.semestral.productos.dto;
 
 import java.math.BigDecimal;
 
-
-
-import com.semestral.productos.model.Categoria;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -32,6 +28,7 @@ public class ProductoRequestDTO {
     @NotNull(message = "El stock no puede estar vacio")
     @Positive(message = "El stock debe ser mayor a 0")
     private Long stock;
-    private Categoria idCat;
+    @NotNull(message = "La categoría no puede estar vacía")
+    private Long idCat;
 
 }

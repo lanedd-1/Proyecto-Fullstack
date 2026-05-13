@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.semestral.productos.dto.ProductoRequestDTO;
 import com.semestral.productos.dto.ProductoResponseDTO;
+import com.semestral.productos.model.Categoria;
 import com.semestral.productos.model.Productos;
 import com.semestral.productos.repository.ProductoRepository;
 
@@ -21,6 +22,7 @@ public class ProductoService {
 
     
     private final ProductoRepository productoRepository;
+    private final CategoriaService categoriaService;
 
     // Convertimos la lista de entidades a lista de DTOs
     public List<ProductoResponseDTO> getAllProductos() {
@@ -35,8 +37,25 @@ public class ProductoService {
     
     // Recibe entidad (validada en Controller) y devuelve DTO
     public ProductoResponseDTO saveProducto(ProductoRequestDTO productos) {
-        Productos prod = new Productos(null, productos.getSku(), productos.getNombreProd(), productos.getDescProd(), productos.getPrecioUnitario(), productos.getFoto(), productos.getStock(), null);
-        return convertToDTO(productoRepository.save(prod));
+        if (productos.getIdCat() == null) {
+            throw new RuntimeException("El id es obligatorio");
+        }
+        Categoria categoria = categoriaService.findById(productos.getIdCat())
+                .orElseThrow(() -> new RuntimeException("La categoría ID: " + productos.getIdCat() + " no existe"));
+
+        Productos prod = new Productos(
+            null,
+            productos.getSku(),
+            productos.getNombreProd(),
+            productos.getDescProd(),
+            productos.getPrecioUnitario(),
+            productos.getFoto(),
+            productos.getStock(),
+            categoria
+        );
+
+        Productos guardado = productoRepository.save(prod);
+        return convertToDTO(guardado);
     }
 
 

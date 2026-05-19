@@ -49,11 +49,9 @@ public ResponseEntity<UsuarioResponseDTO> create(@Valid @RequestBody UsuarioRequ
     UsuarioResponseDTO created = usuarioService.saveUsuario(req);
     return ResponseEntity.created(URI.create("/api/usuarios/" + created.getId())).body(created);
 }
-//falta hacer el put
-@DeleteMapping("/{id}")
-public ResponseEntity<Void> delete(@PathVariable Long id) {
-    usuarioService.eliminarUsuario(id);
-    return ResponseEntity.noContent().build();
+@PutMapping("/{id}")
+public ResponseEntity update(@PathVariable Long id, @Valid @RequestBody UsuarioRequestDTO req) {
+    UsuarioResponseDTO updated = usuarioService.update(id, req);
+    return ResponseEntity.ok(updated);
 }
-
 }

@@ -11,7 +11,7 @@ public class UsuarioResponseDTO {
     private Long id;
     private String nombreUser;
     private String rut;
-    private String correo;
+    private String correoU;
     private Long idRol;
     private String nombreRol;
 }

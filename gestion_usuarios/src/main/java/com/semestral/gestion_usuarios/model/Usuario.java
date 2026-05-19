@@ -23,16 +23,16 @@ public class Usuario {
     private Long idUsuario;
 
     @Column(nullable = false)
-    private String NombreU;
+    private String nombreU;
     
     @Column(nullable = false)
     private String rutU;
     
     @Column(nullable = false)
-    private String CorreoU;
+    private String correoU;
     
     @Column(nullable = false)
-    private String ClaveU;
+    private String claveU;
     
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)

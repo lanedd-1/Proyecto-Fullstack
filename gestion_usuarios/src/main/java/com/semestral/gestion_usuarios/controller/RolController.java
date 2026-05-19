@@ -51,10 +51,7 @@ public ResponseEntity<Void> delete(@PathVariable Long id) {
 @PostMapping("/guardar")
 public ResponseEntity<?> crearRol(@RequestBody Rol rol) {
     try {
-        // Guardamos el nuevo rol (por ejemplo: { "nombreRol": "INVITADO" })
         Rol nuevoRol = rolService.create(rol);
-        
-        // Retornamos el rol creado con el ID que le asignó la base de datos
         return new ResponseEntity<>(nuevoRol, HttpStatus.CREATED);
         
     } catch (Exception e) {

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.semestral.gestion_usuarios.model.Usuario;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional findByCorreoU(String correoU);
 }

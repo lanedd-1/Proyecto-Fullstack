@@ -41,8 +41,8 @@ public class UsuarioService {
     public Optional<UsuarioResponseDTO> encontrarPorId(Long id){
         return usuarioRep.findById(id).map(this::convertToDto);
     }
-    public Optional<UsuarioResponseDTO> encontrarPorCorreo(String correo){
-        return usuarioRep.findByCorreoU(correo);
+    public Optional encontrarPorCorreo(String correo){
+    return usuarioRep.findByCorreoU(correo);
     }
     public void eliminarUsuario(Long id){
         usuarioRep.deleteById(id);

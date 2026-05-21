@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_region;
-    @Column(name = "nombre_region",nullable = false)
-    private String nombre_region;
+    private Long idRegion;
+    @Column(name = "nombreRegion",nullable = false)
+    private String nombreRegion;
 }

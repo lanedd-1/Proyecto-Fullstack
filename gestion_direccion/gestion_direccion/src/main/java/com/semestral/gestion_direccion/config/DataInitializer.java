@@ -22,17 +22,14 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Verificamos si ya hay datos para no duplicar
         if (direccionRepository.count() > 0) {
             log.info("Tablas con datos precargados, se omite carga inicial");
             return;
         }
-        // 1. Crear Región
         Region rm = new Region();
-        rm.setNombre_region("Metropolitana");
+        rm.setNombreRegion("Metropolitana");
         regionRepository.save(rm);
-        
-        // 3. Crear Comuna (vinculada a la Región)
+
         Comuna santiago = new Comuna();
         santiago.setNombreC("Santiago");
         santiago.setRegion(rm);

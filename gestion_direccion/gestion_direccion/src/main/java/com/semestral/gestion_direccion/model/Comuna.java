@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 public class Comuna {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_comuna;
-    @Column(name = "nombre_comuna")
+    private Long idComuna;
+    @Column(name = "nombreComuna")
     private String nombreC;
     @ManyToOne
-    @JoinColumn(name = "id_region")
+    @JoinColumn(name = "idRegion")
     private Region region;
     
 }

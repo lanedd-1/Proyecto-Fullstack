@@ -20,13 +20,13 @@ import lombok.NoArgsConstructor;
 public class Direccion {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id_direccion;
+    private Long idDireccion;
     @Column(name = "calle",nullable = false)
     private String calle;
     @Column(name = "numero",nullable = false)
     private String numero;
     @ManyToOne
-    @JoinColumn(name = "id_comuna",nullable = false)
+    @JoinColumn(name = "idComuna",nullable = false)
     private Comuna comuna;
 
     //falta conectar con estado

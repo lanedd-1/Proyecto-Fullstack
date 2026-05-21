@@ -1,45 +1,56 @@
 package com.semestral.gestion_direccion.controller;
-
-import java.util.List;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.semestral.gestion_direccion.dto.DireccionRequestDTO;
 import com.semestral.gestion_direccion.dto.DireccionResponseDTO;
 import com.semestral.gestion_direccion.service.DireccionService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/direcciones")
+@RequestMapping("/api/direcciones")
 public class DireccionController {
-    
-    private final DireccionService direccionService;
-    //Metodo GET por id 
-    @GetMapping("/{id}")
-    public ResponseEntity<DireccionResponseDTO> obtenerPorId(@PathVariable Long id){
-        return ResponseEntity.ok(direccionService.obtenerPorId(id));
-    }
-    //Metodo POST
-    @PostMapping("/guardar")
-    public ResponseEntity <DireccionResponseDTO> crear(@Valid @RequestBody DireccionRequestDTO dir){
-        return ResponseEntity.status(201).body(direccionService.guardar(dir));
-    }
-    @GetMapping()
-    public ResponseEntity<List<DireccionResponseDTO>> obtenerTodos() {
-        return ResponseEntity.ok(direccionService.obtenerTodas());
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarDireccion(@PathVariable Long id) {
-        direccionService.eliminar(id);
-        return ResponseEntity.noContent().build(); // 204 No Content
-    }
+private final DireccionService direccionService;
+
+@GetMapping
+public ResponseEntity<List<DireccionResponseDTO>> getAll() {
+    return ResponseEntity.ok(direccionService.findAll());
 }
 
+@GetMapping("/{id}")
+public ResponseEntity<DireccionResponseDTO> getById(@PathVariable Long id) {
+    return ResponseEntity.ok(direccionService.findByIdOrThrow(id));
+}
+
+@GetMapping("/batch")
+public ResponseEntity<List<DireccionResponseDTO>> getBatch(@RequestParam Collection<Long> ids) {
+    if (ids == null || ids.isEmpty()) {
+        return ResponseEntity.ok(List.of());
+    }
+    return ResponseEntity.ok(direccionService.findByIds(ids));
+}
+
+@PostMapping
+public ResponseEntity<DireccionResponseDTO> create(@Valid @RequestBody DireccionRequestDTO req) {
+    DireccionResponseDTO created = direccionService.create(req);
+    return ResponseEntity.created(URI.create("/api/direcciones/" + created.getIdDireccion())).body(created);
+}
+
+@PutMapping("/{id}")
+public ResponseEntity<DireccionResponseDTO> update(@PathVariable Long id,
+                                                   @Valid @RequestBody DireccionRequestDTO req) {
+    DireccionResponseDTO updated = direccionService.update(id, req);
+    return ResponseEntity.ok(updated);
+}
+
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> delete(@PathVariable Long id) {
+    direccionService.delete(id);
+    return ResponseEntity.noContent().build();
+}
+}

@@ -1,66 +1,107 @@
 package com.semestral.gestion_direccion.service;
-
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.semestral.gestion_direccion.dto.DireccionRequestDTO;
 import com.semestral.gestion_direccion.dto.DireccionResponseDTO;
+import com.semestral.gestion_direccion.exception.ResourceNotFoundException;
 import com.semestral.gestion_direccion.model.Comuna;
 import com.semestral.gestion_direccion.model.Direccion;
+import com.semestral.gestion_direccion.model.Region;
 import com.semestral.gestion_direccion.repository.ComunaRepository;
 import com.semestral.gestion_direccion.repository.DireccionRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
+@Service
 public class DireccionService {
-    private final DireccionRepository direccionRepository;
-    private final ComunaRepository comunaRepository;
+private final DireccionRepository direccionRep;
+private final ComunaRepository comunaRep;
 
-
-    public List<DireccionResponseDTO> obtenerTodas() {
-    List<Direccion> direcciones = direccionRepository.findAll();
-
-    return direcciones.stream().map(dir -> new DireccionResponseDTO(
-        dir.getId_direccion(),
-        dir.getCalle(),
-        dir.getNumero(),
-        dir.getComuna().getId_comuna(),
-        dir.getComuna().getRegion().getId_region()
-    )).toList();
+@Transactional(readOnly = true)
+public List<DireccionResponseDTO> findAll() {
+    List<Direccion> list = direccionRep.findAllWithComunaAndRegion();
+    return list.stream().map(this::toResponse).collect(Collectors.toList());
 }
-    public DireccionResponseDTO obtenerPorId(Long id) {
-    return direccionRepository.findById(id)
-        .map(dir -> new DireccionResponseDTO(
-            dir.getId_direccion(),
-            dir.getCalle(),
-            dir.getNumero(),
-            dir.getComuna().getId_comuna(),
-            dir.getComuna().getRegion().getId_region()
-        ))
-        .orElseThrow(() -> new RuntimeException("Dirección no encontrada con ID: " + id));
-}
-    
-    public DireccionResponseDTO guardar(DireccionRequestDTO dto) {
-    Comuna comuna = comunaRepository.findById(dto.getId_comuna())
-            .orElseThrow(() -> new RuntimeException("Comuna no encontrada"));
-    Direccion dir = new Direccion();
-    dir.setCalle(dto.getCalle());
-    dir.setNumero(dto.getNumero());
-    dir.setComuna(comuna);
 
-    Direccion guardada = direccionRepository.save(dir);
+@Transactional(readOnly = true)
+public DireccionResponseDTO findByIdOrThrow(Long id) {
+    Direccion d = direccionRep.findByIdWithComunaAndRegion(id)
+            .orElseThrow(() -> new ResourceNotFoundException(id));
+    return toResponse(d);
+}
+
+@Transactional(readOnly = true)
+public List<DireccionResponseDTO> findByIds(Collection<Long> ids) {
+    List<Direccion> list = direccionRep.findAllById(ids);
+    return list.stream().map(this::toResponse).collect(Collectors.toList());
+}
+
+@Transactional
+public DireccionResponseDTO create(DireccionRequestDTO req) {
+    if (req.getIdComuna() == null) {
+        throw new RuntimeException("El id de comuna es obligatorio");
+    }
+
+    Comuna comuna = comunaRep.findById(req.getIdComuna())
+            .orElseThrow(() -> new ResourceNotFoundException(req.getIdComuna()));
+
+    Direccion d = new Direccion();
+    d.setIdDireccion(null);
+    d.setCalle(req.getCalle());
+    d.setNumero(req.getNumero());
+    d.setComuna(comuna);
+
+    Direccion saved = direccionRep.save(d);
+    return toResponse(saved);
+}
+
+@Transactional
+public DireccionResponseDTO update(Long id, DireccionRequestDTO req) {
+    Direccion existing = direccionRep.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(id));
+
+    if (req.getCalle() != null) existing.setCalle(req.getCalle());
+    if (req.getNumero() != null) existing.setNumero(req.getNumero());
+
+    if (req.getIdComuna() != null) {
+        Comuna comuna = comunaRep.findById(req.getIdComuna())
+                .orElseThrow(() -> new ResourceNotFoundException(req.getIdComuna()));
+        existing.setComuna(comuna);
+    }
+
+    Direccion saved = direccionRep.save(existing);
+    return toResponse(saved);
+}
+
+@Transactional
+public void delete(Long id) {
+    if (!direccionRep.existsById(id)) {
+        throw new ResourceNotFoundException(id);
+    }
+    direccionRep.deleteById(id);
+}
+private DireccionResponseDTO toResponse(Direccion d) {
+    if (d == null) return null;
+    String nombreComuna = null;
+    String nombreRegion = null;
+
+    Comuna c = d.getComuna();
+    if (c != null) {
+        nombreComuna = c.getNombreC();
+        Region r = c.getRegion();
+        if (r != null) nombreRegion = r.getNombreRegion();
+    }
+
     return new DireccionResponseDTO(
-        guardada.getId_direccion(),
-        guardada.getCalle(),
-        guardada.getNumero(),
-        comuna.getId_comuna(), 
-        comuna.getRegion().getId_region()
+            d.getIdDireccion(),
+            d.getCalle(),
+            d.getNumero(),
+            nombreComuna,
+            nombreRegion
     );
 }
-    public void eliminar(Long id){
-        direccionRepository.deleteById(id);
-    }
 }

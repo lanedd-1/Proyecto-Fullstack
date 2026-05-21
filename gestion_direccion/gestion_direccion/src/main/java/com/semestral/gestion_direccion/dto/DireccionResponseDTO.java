@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DireccionResponseDTO {
-    private Long id_direccion;
+    private Long idDireccion;
     private String calle;
     private String numero;
-    private Long id_comuna;
-    private Long id_region;
+    private String comuna;
+    private String region;
 }

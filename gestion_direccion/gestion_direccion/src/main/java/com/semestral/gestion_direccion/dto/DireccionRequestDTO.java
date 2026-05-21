@@ -17,5 +17,5 @@ public class DireccionRequestDTO {
     private String numero;
     @NotNull
     @Positive
-    private Long id_comuna;
+    private Long idComuna;
 }

@@ -9,5 +9,5 @@ import com.semestral.gestion_usuarios.model.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Optional findByCorreoU(String correoU);
+    Optional<Usuario> findByCorreoU(String correoU);
 }

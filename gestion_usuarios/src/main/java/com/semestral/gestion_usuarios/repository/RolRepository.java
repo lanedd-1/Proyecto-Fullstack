@@ -9,7 +9,7 @@ import com.semestral.gestion_usuarios.model.Rol;
 
 @Repository
 public interface RolRepository extends JpaRepository<Rol,Long>{  
-    Optional findByNombreRol(String nombreRol);
+    Optional<Rol> findByNombreRol(String nombreRol);
 
     Optional<Rol> findByNombreRolIgnoreCase(String nombreRol);
 

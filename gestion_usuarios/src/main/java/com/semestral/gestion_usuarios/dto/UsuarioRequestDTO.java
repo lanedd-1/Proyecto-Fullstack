@@ -10,17 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioRequestDTO {
-    @NotBlank
-    
+    @NotBlank(message = "el nombre no puede estar vacio")
     private String nombreU;
-    @NotBlank
+    @NotBlank(message = "el rut no puede estar vacio")
     private String rut;
-    @NotBlank
+    @NotBlank(message = "el correo no puede estar vacio")
     @Email
     private String correoU;
-    @NotBlank
+    @NotBlank(message = "la clave no puede estar vacia")
     private String clave;
-    @Positive
+    @Positive(message = "el id del rol debe ser mayor a 0")
     private Long idRol;
 
 }

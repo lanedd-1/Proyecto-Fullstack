@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.semestral.gestion_usuarios.dto.UsuarioRequestDTO;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioService {
     private final UsuarioRepository usuarioRep;
     private final RolRepository rolRep;
+    private final BCryptPasswordEncoder passwordEncoder;
     private UsuarioResponseDTO convertToDto(Usuario u) {
     if (u == null) return null;
     Long idRol = u.getRol() != null ? u.getRol().getIdRol() : null;
@@ -63,12 +65,13 @@ public class UsuarioService {
     us.setNombreU(usuario.getNombreU());
     us.setRutU(usuario.getRut());
     us.setCorreoU(usuario.getCorreoU());
-    us.setClaveU(usuario.getClave()); // SIN encriptar
-        us.setRol(rol);
+    us.setClaveU(passwordEncoder.encode(usuario.getClave()));
+    us.setRol(rol);
 
     Usuario guardado = usuarioRep.save(us);
     return convertToDto(guardado);
     }
+    
     public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuario) {
     Usuario existing = usuarioRep.findById(id)
         .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + id));
@@ -87,16 +90,15 @@ public class UsuarioService {
         if (usuario.getNombreU() != null) existing.setNombreU(usuario.getNombreU());
         if (usuario.getRut() != null) existing.setRutU(usuario.getRut());
         if (usuario.getClave() != null && !usuario.getClave().isBlank()) {
-        existing.setClaveU(usuario.getClave());
+        existing.setClaveU(passwordEncoder.encode(usuario.getClave()));
         }
-    if (usuario.getIdRol() != null) {
-    Rol rol = rolRep.findById(usuario.getIdRol())
-        .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + usuario.getIdRol()));
-    existing.setRol(rol);
-    }
+        if (usuario.getIdRol() != null) {
+            Rol rol = rolRep.findById(usuario.getIdRol())
+            .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + usuario.getIdRol()));
+        existing.setRol(rol);
+        }
 
-    Usuario saved = usuarioRep.save(existing);
-    return convertToDto(saved);
-
+        Usuario saved = usuarioRep.save(existing);
+        return convertToDto(saved);
     }
 }

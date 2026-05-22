@@ -3,10 +3,11 @@ package com.semestral.venta.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import com.semestral.venta.exception.ResourceNotFoundException;
 
 import com.semestral.venta.dto.VentaRequestDTO;
 import com.semestral.venta.dto.VentaResponseDTO;
@@ -32,7 +33,7 @@ public class VentaService {
     public VentaResponseDTO obtenerPorId(Long id) {
 
         Venta venta = ventaRe.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Venta no encontrada con id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException(id));
         return convertToDTO(venta);
     }
 

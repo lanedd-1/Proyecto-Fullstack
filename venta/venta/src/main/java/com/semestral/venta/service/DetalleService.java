@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.semestral.venta.exception.ResourceNotFoundException;
+
 import com.semestral.venta.dto.DetalleRequestDTO;
 import com.semestral.venta.dto.DetalleResponseDTO;
 import com.semestral.venta.model.Detalle;
@@ -30,7 +32,7 @@ public class DetalleService {
 
     public DetalleResponseDTO obtenerPorId(Long id) {
         Detalle d = detalleRe.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Detalle no encontrado con id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException(id));
         return convertToDTO(d);
     }
 
@@ -39,7 +41,7 @@ public class DetalleService {
             throw new IllegalArgumentException("ventaId es obligatorio para crear un detalle");
         }
         Venta venta = ventaRe.findById(dto.getVentaId())
-            .orElseThrow(() -> new NoSuchElementException("Venta no encontrada con id: " + dto.getVentaId()));
+            .orElseThrow(() -> new ResourceNotFoundException(dto.getVentaId()));
 
         Detalle d = new Detalle();
         d.setCantidad(dto.getCantidad());
@@ -56,7 +58,7 @@ public class DetalleService {
         existente.setSubTotal(dto.getSubTotal());
         if (dto.getVentaId() != null) {
             Venta venta = ventaRe.findById(dto.getVentaId())
-                .orElseThrow(() -> new NoSuchElementException("Venta no encontrada con id: " + dto.getVentaId()));
+                .orElseThrow(() -> new ResourceNotFoundException(dto.getVentaId()));
             existente.setIdVenta(venta);
         }
         Detalle actualizado = detalleRe.save(existente);

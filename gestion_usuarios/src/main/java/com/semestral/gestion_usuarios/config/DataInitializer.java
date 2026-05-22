@@ -39,6 +39,7 @@ public class DataInitializer implements CommandLineRunner {
         usuarioAdmin.setCorreoU("admin@JoyeriaEter.com");
         usuarioAdmin.setClaveU("1");
         usuarioAdmin.setRol(admin);
+        usuarioAdmin.setIdEstado(1L);
         usuarioRep.save(usuarioAdmin);
 
         Usuario usuario1 = new Usuario();
@@ -47,6 +48,7 @@ public class DataInitializer implements CommandLineRunner {
         usuario1.setCorreoU("user@example.com");
         usuario1.setClaveU("1");
         usuario1.setRol(user);
+        usuario1.setIdEstado(1L);
         usuarioRep.save(usuario1);
     }
 }

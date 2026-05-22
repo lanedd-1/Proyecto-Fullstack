@@ -35,9 +35,9 @@ public class Usuario {
     private String claveU;
     
     @ManyToOne
-    @JoinColumn(name = "id_rol", nullable = false)
+    @JoinColumn(name = "idRol", nullable = false)
     private Rol rol;
 
-    @Column(name = "id_estado", nullable = false)
+    @Column(name = "idEstado", nullable = false)
     private Long idEstado;
 }

@@ -29,10 +29,10 @@ public class Envio {
     private LocalDateTime fechaRecep;
 
     @Column(name = "idVenta", nullable = false)
-    private Long ventaId;
+    private Long idVenta;
 
     @Column(name = "idDireccion", nullable = false)
-    private Long direccionId;
+    private Long idDireccion;
 
     @Column(name = "estado", nullable = false)
     private String estado;

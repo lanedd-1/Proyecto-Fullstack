@@ -54,72 +54,77 @@ public UsuarioResponseDTO findByIdOrThrow(Long id) {
 
 @Transactional
 public UsuarioResponseDTO saveUsuario(UsuarioRequestDTO usuario) {
-    if (usuario.getIdRol() == null) {
-        throw new BusinessConflictException("El id de rol es obligatorio");
-    }
-    if (usuario.getIdEstado() == null) {
-        throw new BusinessConflictException("El id de estado es obligatorio");
-    }
+        if (usuario.getIdRol() == null) {
+            throw new BusinessConflictException("El id de rol es obligatorio");
+        }
+        if (usuario.getIdEstado() == null) {
+            throw new BusinessConflictException("El id de estado es obligatorio");
+        }
 
-    Rol rol = rolRep.findById(usuario.getIdRol())
-            .orElseThrow(() -> new ResourceNotFoundException(usuario.getIdRol()));
-
-    try {
-        estadoClient.obtenerEstadoPorId(usuario.getIdEstado());
-    } catch (feign.FeignException.NotFound e) {
-        throw new ResourceNotFoundException(usuario.getIdEstado());
-    }
-
-    if (usuarioRep.findByCorreoU(usuario.getCorreoU()).isPresent()) {
-        throw new DataIntegrityViolationException("Correo ya registrado: " + usuario.getCorreoU());
-    }
-
-    Usuario us = new Usuario();
-    us.setIdUsuario(null);
-    us.setNombreU(usuario.getNombreU());
-    us.setRutU(usuario.getRut());
-    us.setCorreoU(usuario.getCorreoU());
-    us.setClaveU(passwordEncoder != null ? passwordEncoder.encode(usuario.getClave()) : usuario.getClave());
-    us.setRol(rol);
-    us.setIdEstado(usuario.getIdEstado());
-
-    Usuario guardado = usuarioRep.save(us);
-    return convertToDto(guardado);
-}
-@Transactional
-public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuario) {
-    Usuario existing = usuarioRep.findById(id)
-    .orElseThrow(() -> new ResourceNotFoundException(id));
-    if (usuario.getCorreoU() != null && !usuario.getCorreoU().equalsIgnoreCase(existing.getCorreoU())) {
-        usuarioRep.findByCorreoU(usuario.getCorreoU()).ifPresent(u -> {
-            throw new DataIntegrityViolationException("Correo ya registrado: " + usuario.getCorreoU());
-        });
-        existing.setCorreoU(usuario.getCorreoU());
-    }
-
-    if (usuario.getNombreU() != null) existing.setNombreU(usuario.getNombreU());
-    if (usuario.getRut() != null) existing.setRutU(usuario.getRut());
-
-    if (usuario.getClave() != null && !usuario.getClave().isBlank()) {
-        existing.setClaveU(passwordEncoder != null ? passwordEncoder.encode(usuario.getClave()) : usuario.getClave());
-    }
-
-    if (usuario.getIdRol() != null) {
         Rol rol = rolRep.findById(usuario.getIdRol())
                 .orElseThrow(() -> new ResourceNotFoundException(usuario.getIdRol()));
-        existing.setRol(rol);
-    }
 
-    if (usuario.getIdEstado() != null) {
+        /* BYPASS TEMPORAL: Desactivado hasta que exista el MS de Estados
         try {
             estadoClient.obtenerEstadoPorId(usuario.getIdEstado());
         } catch (feign.FeignException.NotFound e) {
             throw new ResourceNotFoundException(usuario.getIdEstado());
         }
-        existing.setIdEstado(usuario.getIdEstado());
-    }
+        */
 
-    Usuario saved = usuarioRep.save(existing);
-    return convertToDto(saved);
-}
+        if (usuarioRep.findByCorreoU(usuario.getCorreoU()).isPresent()) {
+            throw new DataIntegrityViolationException("Correo ya registrado: " + usuario.getCorreoU());
+        }
+
+        Usuario us = new Usuario();
+        us.setIdUsuario(null);
+        us.setNombreU(usuario.getNombreU());
+        us.setRutU(usuario.getRut());
+        us.setCorreoU(usuario.getCorreoU());
+        us.setClaveU(passwordEncoder != null ? passwordEncoder.encode(usuario.getClave()) : usuario.getClave());
+        us.setRol(rol);
+        us.setIdEstado(usuario.getIdEstado()); // <-- Sigue guardando el ID normalmente
+
+        Usuario guardado = usuarioRep.save(us);
+        return convertToDto(guardado);
+    }
+@Transactional
+public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuario) {
+        Usuario existing = usuarioRep.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(id));
+        
+        if (usuario.getCorreoU() != null && !usuario.getCorreoU().equalsIgnoreCase(existing.getCorreoU())) {
+            usuarioRep.findByCorreoU(usuario.getCorreoU()).ifPresent(u -> {
+                throw new DataIntegrityViolationException("Correo ya registrado: " + usuario.getCorreoU());
+            });
+            existing.setCorreoU(usuario.getCorreoU());
+        }
+
+        if (usuario.getNombreU() != null) existing.setNombreU(usuario.getNombreU());
+        if (usuario.getRut() != null) existing.setRutU(usuario.getRut());
+
+        if (usuario.getClave() != null && !usuario.getClave().isBlank()) {
+            existing.setClaveU(passwordEncoder != null ? passwordEncoder.encode(usuario.getClave()) : usuario.getClave());
+        }
+
+        if (usuario.getIdRol() != null) {
+            Rol rol = rolRep.findById(usuario.getIdRol())
+                    .orElseThrow(() -> new ResourceNotFoundException(usuario.getIdRol()));
+            existing.setRol(rol);
+        }
+
+        if (usuario.getIdEstado() != null) {
+            /* BYPASS TEMPORAL: Desactivado hasta que exista el MS de Estados
+            try {
+                estadoClient.obtenerEstadoPorId(usuario.getIdEstado());
+            } catch (feign.FeignException.NotFound e) {
+                throw new ResourceNotFoundException(usuario.getIdEstado());
+            }
+            */
+            existing.setIdEstado(usuario.getIdEstado()); // <-- Sigue actualizando el ID normalmente
+        }
+
+        Usuario saved = usuarioRep.save(existing);
+        return convertToDto(saved);
+    }
 }

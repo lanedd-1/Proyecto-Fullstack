@@ -9,5 +9,5 @@ import com.joyeria.gestion_envio.model.Envio;
 
 @Repository
 public interface EnvioRepository extends JpaRepository<Envio, Long> {
-    List<Envio> findByVentaId(Long ventaId);
+    List<Envio> findByIdVenta(Long idVenta);
 }

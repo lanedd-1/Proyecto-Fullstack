@@ -30,7 +30,7 @@ public class EnvioService {
         if (e == null) return null;
         return new EnvioResponseDTO(
                 e.getIdEnvio(), e.getFechaEnvio(), e.getFechaRecep(),
-                e.getVentaId(), e.getDireccionId(), e.getEstado()
+                e.getIdVenta(), e.getIdDireccion(), e.getEstado()
         );
     }
 
@@ -50,6 +50,8 @@ public class EnvioService {
         if (request.getIdVenta() == null || request.getIdDireccion() == null) {
             throw new BusinessConflictException("El ID de la venta y de la dirección son obligatorios.");
         }
+        
+        /* BYPASS TEMPORAL: Desactivado hasta que existan los MS de Ventas y Direcciones
         try {
             ventaClient.obtenerVentaPorId(request.getIdVenta());
         } catch (FeignException.NotFound e) {
@@ -57,6 +59,7 @@ public class EnvioService {
         } catch (FeignException e) {
             throw new ExternalServiceException("Error de comunicación con el servicio de Ventas.");
         }
+        */
         try {
             direccionClient.obtenerDireccionPorId(request.getIdDireccion());
         } catch (FeignException.NotFound e) {
@@ -64,12 +67,17 @@ public class EnvioService {
         } catch (FeignException e) {
             throw new ExternalServiceException("Error de comunicación con el servicio de Direcciones.");
         }
+
         Envio envio = new Envio();
         envio.setIdEnvio(null);
         envio.setFechaEnvio(request.getFechaEnvio() != null ? request.getFechaEnvio() : LocalDateTime.now());
-        envio.setFechaRecep(null);
-        envio.setVentaId(request.getIdVenta());
-        envio.setDireccionId(request.getIdDireccion());
+        
+        // --- LA LÍNEA CORREGIDA ---
+        // Si no mandan fecha de recepción, calculamos 3 días a partir de hoy
+        envio.setFechaRecep(request.getFechaRecepcion() != null ? request.getFechaRecepcion() : LocalDateTime.now().plusDays(3));
+        
+        envio.setIdVenta(request.getIdVenta());
+        envio.setIdDireccion(request.getIdDireccion());
         envio.setEstado(request.getEstado() != null && !request.getEstado().isBlank() ? request.getEstado() : "PREPARACION");
 
         Envio guardado = envioRep.save(envio);
@@ -79,8 +87,8 @@ public class EnvioService {
     @Transactional
     public EnvioResponseDTO update(Long id, EnvioRequestDTO request) {
         Envio existing = envioRep.findById(id).orElseThrow(() -> new ResourceNotFoundException("No se encontró el envío con ID: " + id));
-        if (request.getIdVenta() != null) existing.setVentaId(request.getIdVenta());
-        if (request.getIdDireccion() != null) existing.setDireccionId(request.getIdDireccion());
+        if (request.getIdVenta() != null) existing.setIdVenta(request.getIdVenta());
+        if (request.getIdDireccion() != null) existing.setIdDireccion(request.getIdDireccion());
         if (request.getEstado() != null && !request.getEstado().isBlank()) existing.setEstado(request.getEstado());
         if (request.getFechaEnvio() != null) existing.setFechaEnvio(request.getFechaEnvio());
         if (request.getFechaRecepcion() != null) {

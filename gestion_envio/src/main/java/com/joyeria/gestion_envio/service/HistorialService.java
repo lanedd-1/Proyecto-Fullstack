@@ -28,10 +28,10 @@ public class HistorialService {
         if (h == null) return null;
         return new HistorialResponseDTO(
                 h.getIdHistorial(),
-                h.getEnvioId(),
+                h.getIdEnvio(),
                 h.getFecha(),
                 h.getEstado(),
-                h.getUsuarioId()
+                h.getIdUsuario()
         );
     }
 
@@ -44,7 +44,7 @@ public class HistorialService {
 
     @Transactional
     public List<HistorialResponseDTO> getHistorialByEnvioId(Long envioId) {
-        return historialRep.findByEnvioId(envioId).stream()
+        return historialRep.findByIdEnvio(envioId).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -59,21 +59,21 @@ public class HistorialService {
     @Transactional
     public HistorialResponseDTO saveHistorial(HistorialRequestDTO request) {
         // 1. Validaciones iniciales
-        if (request.getEnvioId() == null || request.getEstado() == null || request.getEstado().isBlank() || request.getUsuarioId() == null) {
+        if (request.getIdEnvio() == null || request.getEstado() == null || request.getEstado().isBlank() || request.getIdUsuario() == null) {
             throw new BusinessConflictException("El ID de envío, el estado y el ID de usuario son obligatorios.");
         }
         try {
-            usuarioClient.obtenerUsuarioPorId(request.getUsuarioId());
+            usuarioClient.obtenerUsuarioPorId(request.getIdUsuario());
         } catch (FeignException.NotFound e) {
-            throw new ResourceNotFoundException("No se puede registrar el historial: El usuario con ID " + request.getUsuarioId() + " no existe.");
+            throw new ResourceNotFoundException("No se puede registrar el historial: El usuario con ID " + request.getIdUsuario() + " no existe.");
         } catch (FeignException e) {
             throw new ExternalServiceException("Error de comunicación con el servicio de usuarios. Intente más tarde.");
         }
 
         Historial historial = new Historial();
-        historial.setEnvioId(request.getEnvioId());
+        historial.setIdEnvio(request.getIdEnvio());
         historial.setEstado(request.getEstado());
-        historial.setUsuarioId(request.getUsuarioId());
+        historial.setIdUsuario(request.getIdUsuario());
         historial.setFecha(LocalDateTime.now());
 
         Historial guardado = historialRep.save(historial);

@@ -21,8 +21,8 @@ public class Historial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idHistorial;
-    @Column(name = "envioId", nullable = false)
-    private Long envioId;
+    @Column(name = "idEnvio", nullable = false)
+    private Long idEnvio;
 
     @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
@@ -30,6 +30,6 @@ public class Historial {
     @Column(name = "estado")
     private String estado;
 
-    @Column(name = "usuarioId")
-    private Long usuarioId;
+    @Column(name = "idUsuario")
+    private Long idUsuario;
 }

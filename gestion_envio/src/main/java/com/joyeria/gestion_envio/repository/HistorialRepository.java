@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.joyeria.gestion_envio.model.Historial;
 @Repository
 public interface HistorialRepository extends JpaRepository<Historial,Long> {
-    List<Historial> findByEnvioId(Long envioId);
+    List<Historial> findByIdEnvio(Long idEnvio);
 
 }

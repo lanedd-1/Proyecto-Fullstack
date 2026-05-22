@@ -1,5 +1,7 @@
 package com.semestral.venta.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,7 +29,7 @@ public class Venta {
     private Long idVenta;
 
     @Column(nullable = false)
-    private String fechaV;
+    private LocalDateTime fechaV;
 
     @Positive
     @Column(name = "totalVenta", nullable = false)

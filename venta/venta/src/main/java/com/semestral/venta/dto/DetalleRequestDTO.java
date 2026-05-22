@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DetalleRequestDTO {
 
-    @NotNull(message = "La cantidad no puede estar vacia") private Integer cantidad;
+    @NotNull(message = "La cantidad no puede estar vacia")
+     private Integer cantidad;
 
 
-    @NotNull(message = "El total no puede estar vacio") private Double subTotal;
+    @NotNull(message = "El total no puede estar vacio")
+     private Double subTotal;
 
 }

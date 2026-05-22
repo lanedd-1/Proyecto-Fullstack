@@ -10,8 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.semestral.inventario.dto.EstanteRequestDTO;
 import com.semestral.inventario.dto.InventarioRequestDTO;
 import com.semestral.inventario.dto.InventarioResponseDTO;
+import com.semestral.inventario.dto.PasilloRequestDTO;
+import com.semestral.inventario.dto.UbicacionRequestDTO;
+import com.semestral.inventario.model.Estante;
+import com.semestral.inventario.model.Pasillo;
+import com.semestral.inventario.model.Ubicacion;
 import com.semestral.inventario.service.InventarioService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +37,21 @@ public class Controller {
     @PostMapping("/descontar")
     public ResponseEntity<InventarioResponseDTO> descontarStock(@RequestBody InventarioRequestDTO request) {
         return ResponseEntity.ok(invService.descontarStock(request));
+    }
+
+    @PostMapping("/pasillos")
+    public ResponseEntity<Pasillo> crearPasillo(@RequestBody PasilloRequestDTO request) {
+        return ResponseEntity.ok(invService.crearPasillo(request));
+    }
+
+    @PostMapping("/estantes")
+    public ResponseEntity<Estante> crearEstante(@RequestBody EstanteRequestDTO request) {
+        return ResponseEntity.ok(invService.crearEstante(request));
+    }
+
+    @PostMapping("/ubicaciones")
+    public ResponseEntity<Ubicacion> crearUbicacion(@RequestBody UbicacionRequestDTO request) {
+        return ResponseEntity.ok(invService.crearUbicacion(request));
     }
 
     @GetMapping("/producto/{idProducto}")

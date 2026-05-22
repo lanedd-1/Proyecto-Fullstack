@@ -14,8 +14,8 @@ public interface InventarioStockRepository extends JpaRepository<Inventario, Lon
 
  List<Inventario> findByUbicacionId(Long idUbicacion);
 
- List<Inventario> findByIdProducto(Long idProducto);
+ List<Inventario> findByIdProducto(Object idProd);
 
- Optional<Inventario> findByIdProductoAndUbicacionId(Long idProducto, Long idUbicacion);
+ Optional<Inventario> findByIdProductoAndUbicacionId(Object idProd, Long idUbicacion);
 
 }

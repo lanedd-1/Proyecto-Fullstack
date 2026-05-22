@@ -24,7 +24,6 @@ public class Ubicacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPasEst;
 
-
     @ManyToOne
     @JoinColumn(name = "PasilloId", nullable = false)
     private Pasillo idPasillo;

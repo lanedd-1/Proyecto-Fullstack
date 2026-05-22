@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class InventarioResponseDTO {
 
     private Long idPps;             // id unico
-    private Long idProducto;
+    private Long idProd;
     private String nombrePasillo;   // en que pasillo esta
     private String nombreEstante;   // en que estante esta
     private Integer stock;          // la cantidad disponible en este lugar específico

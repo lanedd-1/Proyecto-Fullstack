@@ -1,7 +1,9 @@
 package com.semestral.inventario.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,8 @@ public class InventarioService {
     private final EstanteRepository estanteRe;
 
     public InventarioResponseDTO agregarStock(InventarioRequestDTO re){
+
+
         Pasillo pasillo = pasillRe.findById(re.getIdPasillo())
             .orElseThrow(() -> new NoSuchElementException("Pasillo no encontrado"));
         Estante estante = estanteRe.findById(re.getIdEstante())
@@ -53,6 +57,39 @@ public class InventarioService {
         Inventario guardar = inventarioRe.save(registroStock);
         return convertToDTO(guardar);
     }
+
+
+    public InventarioResponseDTO descontarStock(InventarioRequestDTO re){
+        Ubicacion ubi = ubicacionRe
+        .findByPasilloIdAndEstanteId(re.getIdPasillo(), re.getIdEstante())
+        .orElseThrow(() -> new NoSuchElementException("No se encontro la ubicacion del Objeto con el id" + re.getIdPasillo() + re.getIdEstante() ));
+
+        Inventario registro = inventarioRe
+        .findByIdProductoAndUbicacionId(re.getIdProducto(), ubi.getIdPasEst())
+        .orElseThrow(() -> new NoSuchElementException("El producto no registra stock en esta ubicacion"));
+
+
+        if (registro.getStock() < re.getCantidad()) {
+            throw new IllegalArgumentException("Stock insuficiente en esta ubicación. Disponible: " 
+                    + registro.getStock() + ", Solicitado: " + re.getCantidad());
+    }
+
+    registro.setStock(registro.getStock() - re.getCantidad());
+        Inventario actualizado = inventarioRe.save(registro);
+        return convertToDTO(actualizado);
+}
+
+
+public List<InventarioResponseDTO> getStockPorProducto (Long idPps){
+    return inventarioRe.findByIdProducto(idPps).stream()
+    .map(this::convertToDTO).collect(Collectors.toList());
+}
+
+public List<InventarioResponseDTO> getTodoStock(){
+return inventarioRe.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+
+}
+
 
     private InventarioResponseDTO convertToDTO(Inventario s) {
         return new InventarioResponseDTO(

@@ -37,4 +37,7 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
+
+    @Column(name = "id_estado", nullable = false)
+    private Long idEstado;
 }

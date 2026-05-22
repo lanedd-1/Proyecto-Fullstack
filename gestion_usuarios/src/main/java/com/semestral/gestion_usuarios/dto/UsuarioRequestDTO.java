@@ -2,6 +2,7 @@ package com.semestral.gestion_usuarios.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,9 @@ public class UsuarioRequestDTO {
     private String correoU;
     @NotBlank(message = "la clave no puede estar vacia")
     private String clave;
-    @Positive(message = "el id del rol debe ser mayor a 0")
+    @Positive(message = "el id del rol debe ser número mayor a cero")
     private Long idRol;
-
+    @NotNull(message = "el id de estado no puede ser nulo")
+    @Positive(message = "el id de estado debe ser un número mayor a cero")
+    private Long idEstado;
 }

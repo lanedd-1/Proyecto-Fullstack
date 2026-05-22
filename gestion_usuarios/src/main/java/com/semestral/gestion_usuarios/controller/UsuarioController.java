@@ -30,7 +30,7 @@ public ResponseEntity<UsuarioResponseDTO> getById(@PathVariable Long id) {
 @PostMapping
 public ResponseEntity<UsuarioResponseDTO> create(@Valid @RequestBody UsuarioRequestDTO req) {
     UsuarioResponseDTO created = usuarioService.saveUsuario(req);
-    return ResponseEntity.created(URI.create("/api/usuarios/" + created.getId())).body(created);
+    return ResponseEntity.created(URI.create("/api/usuarios/" + created.getIdU())).body(created);
 }
 
 @PutMapping("/{id}")

@@ -1,4 +1,5 @@
 package com.semestral.gestion_usuarios.service;
+import com.semestral.gestion_usuarios.client.EstadoClient;
 import com.semestral.gestion_usuarios.dto.UsuarioRequestDTO;
 import com.semestral.gestion_usuarios.dto.UsuarioResponseDTO;
 import com.semestral.gestion_usuarios.exception.BusinessConflictException;
@@ -21,6 +22,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRep;
 private final RolRepository rolRep;
 private final BCryptPasswordEncoder passwordEncoder;
+private final EstadoClient estadoClient;
 
 private UsuarioResponseDTO convertToDto(Usuario u) {
     if (u == null) return null;
@@ -32,7 +34,8 @@ private UsuarioResponseDTO convertToDto(Usuario u) {
         u.getRutU(),
         u.getCorreoU(),
         idRol,
-        nombreRol
+        nombreRol,
+        u.getIdEstado()
     );
     }
 @Transactional(readOnly = true)
@@ -54,9 +57,18 @@ public UsuarioResponseDTO saveUsuario(UsuarioRequestDTO usuario) {
     if (usuario.getIdRol() == null) {
         throw new BusinessConflictException("El id de rol es obligatorio");
     }
+    if (usuario.getIdEstado() == null) {
+        throw new BusinessConflictException("El id de estado es obligatorio");
+    }
 
     Rol rol = rolRep.findById(usuario.getIdRol())
             .orElseThrow(() -> new ResourceNotFoundException(usuario.getIdRol()));
+
+    try {
+        estadoClient.obtenerEstadoPorId(usuario.getIdEstado());
+    } catch (feign.FeignException.NotFound e) {
+        throw new ResourceNotFoundException(usuario.getIdEstado());
+    }
 
     if (usuarioRep.findByCorreoU(usuario.getCorreoU()).isPresent()) {
         throw new DataIntegrityViolationException("Correo ya registrado: " + usuario.getCorreoU());
@@ -69,6 +81,7 @@ public UsuarioResponseDTO saveUsuario(UsuarioRequestDTO usuario) {
     us.setCorreoU(usuario.getCorreoU());
     us.setClaveU(passwordEncoder != null ? passwordEncoder.encode(usuario.getClave()) : usuario.getClave());
     us.setRol(rol);
+    us.setIdEstado(usuario.getIdEstado());
 
     Usuario guardado = usuarioRep.save(us);
     return convertToDto(guardado);
@@ -95,6 +108,15 @@ public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuario) {
         Rol rol = rolRep.findById(usuario.getIdRol())
                 .orElseThrow(() -> new ResourceNotFoundException(usuario.getIdRol()));
         existing.setRol(rol);
+    }
+
+    if (usuario.getIdEstado() != null) {
+        try {
+            estadoClient.obtenerEstadoPorId(usuario.getIdEstado());
+        } catch (feign.FeignException.NotFound e) {
+            throw new ResourceNotFoundException(usuario.getIdEstado());
+        }
+        existing.setIdEstado(usuario.getIdEstado());
     }
 
     Usuario saved = usuarioRep.save(existing);

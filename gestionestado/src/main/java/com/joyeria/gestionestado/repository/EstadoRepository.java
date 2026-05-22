@@ -11,7 +11,7 @@ import com.joyeria.gestionestado.model.Estado;
 @Repository
 public interface EstadoRepository extends JpaRepository<Estado,Long> {
 
-    Optional existsByNombreEstadoIgnoreCase(String nombreEstado);
+    Optional<Estado> findByNombreEstadoIgnoreCase(String nombreEstado);
 
     List<Estado> findByNombreEstadoContainingIgnoreCase(String texto);
 

@@ -1,9 +1,5 @@
 package com.semestral.venta.dto;
 
-
-
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VentaResponseDTO {
 
-
-    private LocalDateTime idVenta;
+    private Long idVenta;
 
     private String fechaV;
 

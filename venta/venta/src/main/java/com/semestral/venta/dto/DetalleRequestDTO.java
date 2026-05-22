@@ -17,5 +17,8 @@ public class DetalleRequestDTO {
 
     @NotNull(message = "El total no puede estar vacio")
      private Double subTotal;
+    @NotNull(message = "La ventaId es obligatoria")
+    private Long ventaId;
+
 
 }

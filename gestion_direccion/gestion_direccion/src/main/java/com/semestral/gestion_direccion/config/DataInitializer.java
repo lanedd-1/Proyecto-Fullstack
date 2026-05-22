@@ -56,7 +56,15 @@ public class DataInitializer implements CommandLineRunner {
         dir.setComuna(santiago);
         dir.setIdUsuario(1L);
         dir.setIdEstado(1L);
+        direccionRepository.save(dir);    
 
-        direccionRepository.save(dir);      
+        Direccion dir1 = new Direccion();
+        dir1.setCalle("Avenida pepes");
+        dir1.setNumero("222");
+        dir1.setComuna(quilicura);
+        dir1.setIdUsuario(2L);
+        dir1.setIdEstado(2L);
+
+        direccionRepository.save(dir1);      
     }
 }

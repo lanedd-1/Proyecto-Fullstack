@@ -18,4 +18,11 @@ public class DireccionRequestDTO {
     @NotNull(message = "El id no puede ser nula")
     @Positive(message = "el id debe ser mayor a 0")
     private Long idComuna;
+    @NotNull(message = "El id no puede ser nula")
+    @Positive(message = "el id debe ser mayor a 0")
+    private Long idUsuario;
+    @NotNull(message = "El id no puede ser nula")
+    @Positive(message = "el id debe ser mayor a 0")
+    private Long idEstado;
+
 }

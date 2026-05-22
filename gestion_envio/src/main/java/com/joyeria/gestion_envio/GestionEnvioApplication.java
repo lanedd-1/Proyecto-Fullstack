@@ -11,5 +11,4 @@ public class GestionEnvioApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GestionEnvioApplication.class, args);
 	}
-
 }

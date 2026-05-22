@@ -13,4 +13,6 @@ public class DireccionResponseDTO {
     private String numero;
     private String comuna;
     private String region;
+    private Long idUsuario;
+    private Long idEstado;
 }

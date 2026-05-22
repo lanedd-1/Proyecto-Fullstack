@@ -28,6 +28,9 @@ public class Direccion {
     @ManyToOne
     @JoinColumn(name = "idComuna",nullable = false)
     private Comuna comuna;
+    @Column(name = "idUser")
+    private Long idUsuario;
 
-    //falta conectar con estado
+    @Column(name = "idEstado")
+    private Long idEstado;
 }

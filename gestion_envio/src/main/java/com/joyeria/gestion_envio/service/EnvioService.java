@@ -72,8 +72,6 @@ public class EnvioService {
         envio.setIdEnvio(null);
         envio.setFechaEnvio(request.getFechaEnvio() != null ? request.getFechaEnvio() : LocalDateTime.now());
         
-        // --- LA LÍNEA CORREGIDA ---
-        // Si no mandan fecha de recepción, calculamos 3 días a partir de hoy
         envio.setFechaRecep(request.getFechaRecepcion() != null ? request.getFechaRecepcion() : LocalDateTime.now().plusDays(3));
         
         envio.setIdVenta(request.getIdVenta());

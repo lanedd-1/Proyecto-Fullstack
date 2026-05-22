@@ -50,7 +50,13 @@ public class DataInitializer implements CommandLineRunner {
         conchali.setRegion(rm);
         comunaRepository.save(conchali);
 
-        direccionRepository.save(new Direccion(null,"Avenida Siempre Viva", "123", santiago));
-        log.info("Tabla Direccion: {} Datos Cargados",direccionRepository.count());
+        Direccion dir = new Direccion();
+        dir.setCalle("Avenida Siempre Viva");
+        dir.setNumero("123");
+        dir.setComuna(santiago);
+        dir.setIdUsuario(1L);
+        dir.setIdEstado(1L);
+
+        direccionRepository.save(dir);      
     }
 }

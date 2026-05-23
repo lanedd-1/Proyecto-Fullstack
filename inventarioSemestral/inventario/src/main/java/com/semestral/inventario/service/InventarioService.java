@@ -40,7 +40,7 @@ public class InventarioService {
 
         Ubicacion ubicacion = findOrCreateUbicacion(re.getIdPasillo(), re.getIdEstante());
 
-        Optional<Inventario> stockExistente = inventarioRe.findByIdProductoAndUbicacionId(validarProd(re.getIdProd()), ubicacion.getIdPasEst());
+        Optional<Inventario> stockExistente = inventarioRe.findByProductoYUbicacion(validarProd(re.getIdProd()), ubicacion.getIdPasEst());
 
         Inventario registroStock;
 
@@ -69,7 +69,7 @@ public class InventarioService {
         Estante estante = estanteRe.findById(request.getIdEstante())
             .orElseThrow(() -> new NoSuchElementException("Estante no encontrado"));
 
-        return ubicacionRe.findByPasilloIdAndEstanteId(pasillo.getIdPasillo(), estante.getIdEstante())
+        return ubicacionRe.findByPasilloAndEstante(pasillo.getIdPasillo(), estante.getIdEstante())
             .orElseGet(() -> ubicacionRe.save(new Ubicacion(null, pasillo, estante)));
     }
 
@@ -79,7 +79,7 @@ public class InventarioService {
         Estante estante = estanteRe.findById(idEstante)
             .orElseThrow(() -> new NoSuchElementException("Estante no encontrado"));
 
-        return ubicacionRe.findByPasilloIdAndEstanteId(idPasillo, idEstante)
+        return ubicacionRe.findByPasilloAndEstante(idPasillo, idEstante)
             .orElseGet(() -> ubicacionRe.save(new Ubicacion(null, pasillo, estante)));
     }
 
@@ -98,11 +98,11 @@ public class InventarioService {
 
     public InventarioResponseDTO descontarStock(InventarioRequestDTO re){
         Ubicacion ubi = ubicacionRe
-        .findByPasilloIdAndEstanteId(re.getIdPasillo(), re.getIdEstante())
+        .findByPasilloAndEstante(re.getIdPasillo(), re.getIdEstante())
         .orElseThrow(() -> new NoSuchElementException("No se encontro la ubicacion del Objeto con el id" + re.getIdPasillo() + re.getIdEstante() ));
 
         Inventario registro = inventarioRe
-        .findByIdProductoAndUbicacionId(validarProd(re.getIdProd()), ubi.getIdPasEst())
+        .findByProductoYUbicacion(validarProd(re.getIdProd()), ubi.getIdPasEst())
         .orElseThrow(() -> new NoSuchElementException("El producto no registra stock en esta ubicacion"));
 
 
@@ -118,7 +118,7 @@ public class InventarioService {
 
 
 public List<InventarioResponseDTO> getStockPorProducto (Long idPps){
-    return inventarioRe.findByIdProducto(idPps).stream()
+    return inventarioRe.findByIdProd(idPps).stream()
     .map(this::convertToDTO).collect(Collectors.toList());
 }
 

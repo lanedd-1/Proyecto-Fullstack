@@ -54,13 +54,13 @@ public class Controller {
         return ResponseEntity.ok(invService.crearUbicacion(request));
     }
 
-    @GetMapping("/producto/{idProducto}")
+    @GetMapping("/{id}")
     public ResponseEntity<List<InventarioResponseDTO>> obtenerStockPorProducto(
             @PathVariable("idProducto") Long idProducto) {
         return ResponseEntity.ok(invService.getStockPorProducto(idProducto));
     }
 
-    @GetMapping("/todos")
+    @GetMapping()
     public ResponseEntity<List<InventarioResponseDTO>> obtenerTodoElStock() {
         return ResponseEntity.ok(invService.getTodoStock());
     }

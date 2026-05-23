@@ -36,7 +36,7 @@ public class DataInitializer implements CommandLineRunner{
         Pasillo pas = pasRe.findById(1L)
         .orElseGet(() -> pasRe.save(new Pasillo(null, "pasillo 1")));
 
-        Ubicacion ubi = ubiRe.findByPasilloIdAndEstanteId(pas.getIdPasillo(), est.getIdEstante())
+        Ubicacion ubi = ubiRe.findByPasilloAndEstante(pas.getIdPasillo(), est.getIdEstante())
         .orElseGet(() -> ubiRe.save(new Ubicacion(null, pas, est)));
 
         if (invRe.count() > 0) {

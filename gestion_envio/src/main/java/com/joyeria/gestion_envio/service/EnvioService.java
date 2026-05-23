@@ -50,8 +50,6 @@ public class EnvioService {
         if (request.getIdVenta() == null || request.getIdDireccion() == null) {
             throw new BusinessConflictException("El ID de la venta y de la dirección son obligatorios.");
         }
-        
-        /* BYPASS TEMPORAL: Desactivado hasta que existan los MS de Ventas y Direcciones
         try {
             ventaClient.obtenerVentaPorId(request.getIdVenta());
         } catch (FeignException.NotFound e) {
@@ -59,7 +57,7 @@ public class EnvioService {
         } catch (FeignException e) {
             throw new ExternalServiceException("Error de comunicación con el servicio de Ventas.");
         }
-        */
+
         try {
             direccionClient.obtenerDireccionPorId(request.getIdDireccion());
         } catch (FeignException.NotFound e) {

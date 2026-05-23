@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,8 @@ public class UsuarioRequestDTO {
     @NotBlank(message = "el correo no puede estar vacio")
     @Email
     private String correoU;
-    @NotBlank(message = "la clave no puede estar vacia")
+    @NotBlank(message = "la clave no puede estar vacía")
+    @Size(min = 8, max = 20, message = "La clave debe tener entre 8 y 20 caracteres")
     private String clave;
     @Positive(message = "el id del rol debe ser número mayor a cero")
     private Long idRol;

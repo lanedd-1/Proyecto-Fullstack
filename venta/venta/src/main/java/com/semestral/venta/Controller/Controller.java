@@ -1,4 +1,4 @@
-package com.semestral.venta.controller;
+package com.semestral.venta.Controller;
 
 import java.util.List;
 

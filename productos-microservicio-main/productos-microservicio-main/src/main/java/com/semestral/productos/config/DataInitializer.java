@@ -34,7 +34,8 @@ public class DataInitializer implements CommandLineRunner{
         }
 
         //sino se crean datos para manipular la BD
-        ProdRepo.save(new Productos(null,
+        ProdRepo.save(new Productos(
+            null,
             "LMiun122",
             "Pulsera de plata",
             "pulsera de plata 9/25 con insignia de oro de 14K (58,5% oro)",
@@ -55,7 +56,7 @@ public class DataInitializer implements CommandLineRunner{
 
         ProdRepo.save(new Productos(
         null,
-        "LMiun122",
+        "LMiun132",
         "Pulsera de plata",
         "pulsera de plata 9/25 con insignia de oro de 14K",
         new BigDecimal(85990),

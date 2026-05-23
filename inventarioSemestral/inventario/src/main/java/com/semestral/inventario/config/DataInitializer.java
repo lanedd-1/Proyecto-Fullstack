@@ -48,7 +48,7 @@ public class DataInitializer implements CommandLineRunner{
         invRe.save(new Inventario(
             null,
             25,
-            1L,
+            4L,
             ubi
         ));
     }

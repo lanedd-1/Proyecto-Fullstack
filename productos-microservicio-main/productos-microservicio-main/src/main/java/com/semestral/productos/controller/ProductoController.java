@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.semestral.productos.exception.ResourceNotFoundException;
+
 
 @RestController
 @RequestMapping("/api/productos")
@@ -50,10 +52,11 @@ public class ProductoController {
     //delete (id)
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Long id){
-        if(prodService.encontrarPorId(id).isEmpty()) {
+        if (prodService.encontrarPorId(id).isEmpty()) {
+            throw new ResourceNotFoundException(id);
         }
         prodService.eliminarProd(id);
-        return ResponseEntity.ok("El producto");
-    } 
+        return ResponseEntity.ok("Producto eliminado correctamente");
+    }
     
 }

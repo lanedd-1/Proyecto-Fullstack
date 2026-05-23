@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.semestral.productos.dto.ProductoRequestDTO;
 import com.semestral.productos.dto.ProductoResponseDTO;
+import com.semestral.productos.exception.ResourceNotFoundException;
 import com.semestral.productos.model.Categoria;
 import com.semestral.productos.model.Productos;
 import com.semestral.productos.repository.ProductoRepository;
@@ -38,10 +39,10 @@ public class ProductoService {
     // Recibe entidad (validada en Controller) y devuelve DTO
     public ProductoResponseDTO saveProducto(ProductoRequestDTO productos) {
         if (productos.getIdCat() == null) {
-            throw new RuntimeException("El id es obligatorio");
+            throw new IllegalArgumentException("El id de categoría es obligatorio");
         }
         Categoria categoria = categoriaService.findById(productos.getIdCat())
-                .orElseThrow(() -> new RuntimeException("La categoría ID: " + productos.getIdCat() + " no existe"));
+                .orElseThrow(() -> new ResourceNotFoundException(productos.getIdCat()));
 
         Productos prod = new Productos(
             null,
@@ -62,7 +63,7 @@ public class ProductoService {
     // Método Helper para mapear
     private ProductoResponseDTO convertToDTO(Productos p) {
         return new ProductoResponseDTO(
-            p.getId(),
+            p.getIdProd(),
             p.getSku(),
             p.getNombreProd(),
             p.getDescProd(),

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.semestral.productos.dto.CategoriaRequestDTO;
 import com.semestral.productos.dto.CategoriaResponseDTO;
 import com.semestral.productos.service.CategoriaService;
+import com.semestral.productos.exception.ResourceNotFoundException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,9 @@ public class CategoriaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoriaResponseDTO> encontrarPorId(@PathVariable Long idCat){
-        return catServ.buscarPorId(idCat).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return catServ.buscarPorId(idCat)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException(idCat));
     }
 
 }

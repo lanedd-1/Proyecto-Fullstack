@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class CategoriaResponseDTO {
 
 
-    private Long id;
+    private Long idCat;
     private String nombreCat;
 
     

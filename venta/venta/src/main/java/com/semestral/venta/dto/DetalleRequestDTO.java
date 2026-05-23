@@ -12,13 +12,15 @@ import lombok.NoArgsConstructor;
 public class DetalleRequestDTO {
 
     @NotNull(message = "La cantidad no puede estar vacia")
-     private Integer cantidad;
-
+    private Integer cantidad;
 
     @NotNull(message = "El total no puede estar vacio")
-     private Double subTotal;
+    private Double subTotal;
+
     @NotNull(message = "La ventaId es obligatoria")
     private Long ventaId;
 
+    @NotNull(message = "El productoId es obligatorio")
+    private Long productoId;
 
 }

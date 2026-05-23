@@ -16,4 +16,9 @@ public class DetalleResponseDTO {
 
     private Double subTotal;
 
+    private Long productoId;
+
+    private String productoNombre;
+
 }
+

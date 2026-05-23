@@ -1,13 +1,14 @@
 package com.semestral.venta.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.semestral.venta.client.ProductoClient;
 import com.semestral.venta.exception.ResourceNotFoundException;
-
 import com.semestral.venta.dto.DetalleRequestDTO;
 import com.semestral.venta.dto.DetalleResponseDTO;
 import com.semestral.venta.model.Detalle;
@@ -23,6 +24,7 @@ public class DetalleService {
 
     private final DetalleRepository detalleRe;
     private final VentaRepository ventaRe;
+    private final ProductoClient productoClient;
 
     public List<DetalleResponseDTO> obtenerTodos() {
         return detalleRe.findAll().stream()
@@ -40,13 +42,23 @@ public class DetalleService {
         if (dto.getVentaId() == null) {
             throw new IllegalArgumentException("ventaId es obligatorio para crear un detalle");
         }
+        if (dto.getProductoId() == null) {
+            throw new IllegalArgumentException("productoId es obligatorio para crear un detalle");
+        }
+
         Venta venta = ventaRe.findById(dto.getVentaId())
             .orElseThrow(() -> new ResourceNotFoundException(dto.getVentaId()));
+
+        Map<String, Object> producto = productoClient.obtenerPorId(dto.getProductoId());
+        if (producto == null || producto.get("idProd") == null) {
+            throw new ResourceNotFoundException(dto.getProductoId());
+        }
 
         Detalle d = new Detalle();
         d.setCantidad(dto.getCantidad());
         d.setSubTotal(dto.getSubTotal());
         d.setIdVenta(venta);
+        d.setProductoId(dto.getProductoId());
         Detalle nuevo = detalleRe.save(d);
         return convertToDTO(nuevo);
     }
@@ -61,16 +73,42 @@ public class DetalleService {
                 .orElseThrow(() -> new ResourceNotFoundException(dto.getVentaId()));
             existente.setIdVenta(venta);
         }
+        if (dto.getProductoId() != null) {
+            Map<String, Object> producto = productoClient.obtenerPorId(dto.getProductoId());
+            if (producto == null || producto.get("idProd") == null) {
+                throw new ResourceNotFoundException(dto.getProductoId());
+            }
+            existente.setProductoId(dto.getProductoId());
+        }
         Detalle actualizado = detalleRe.save(existente);
         return convertToDTO(actualizado);
     }
 
 
     public DetalleResponseDTO convertToDTO(Detalle d) {
-        return new DetalleResponseDTO(
+        DetalleResponseDTO dto = new DetalleResponseDTO(
             d.getIdDetalle(),
             d.getCantidad(),
-            d.getSubTotal()
+            d.getSubTotal(),
+            d.getProductoId(),
+            null
         );
+        if (d.getProductoId() != null) {
+            try {
+                Map<String, Object> producto = productoClient.obtenerPorId(d.getProductoId());
+                dto.setProductoNombre(getNombreProducto(producto));
+            } catch (Exception e) {
+                // Si el servicio de productos no está disponible o retorna error, devolvemos al menos el productoId.
+            }
+        }
+        return dto;
+    }
+
+    private String getNombreProducto(Map<String, Object> producto) {
+        if (producto == null) {
+            return null;
+        }
+        Object nombre = producto.get("nombreProd");
+        return nombre != null ? nombre.toString() : null;
     }
 }

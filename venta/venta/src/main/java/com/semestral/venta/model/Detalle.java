@@ -38,4 +38,8 @@ public class Detalle {
     @JoinColumn
     private Venta idVenta;
 
+    @Column(nullable = false)
+    private Long productoId;
+
 }
+

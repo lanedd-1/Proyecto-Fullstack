@@ -1,4 +1,4 @@
-package com.semestral.venta.Controller;
+package com.semestral.venta.controller;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Controller {
 	private final DetalleService detalleService;
 
 	// Ventas
-	@GetMapping("/ventas")
+	@GetMapping("/verVentas")
 	public List<VentaResponseDTO> getAllVentas() {
 		return ventaService.obtenerTodas();
 	}
@@ -49,7 +49,7 @@ public class Controller {
 	}
 
 	// Detalles
-	@GetMapping("/detalles")
+	@GetMapping("/verDetalles")
 	public List<DetalleResponseDTO> getAllDetalles() {
 		return detalleService.obtenerTodos();
 	}

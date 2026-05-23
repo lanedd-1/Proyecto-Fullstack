@@ -25,28 +25,24 @@ public class HistorialController {
 
     private final HistorialService historialService;
 
-    // 1. Crear un nuevo registro en el historial (POST http://localhost:8085/api/historial)
     @PostMapping
     public ResponseEntity<HistorialResponseDTO> crearHistorial(@Valid @RequestBody HistorialRequestDTO request) {
         HistorialResponseDTO response = historialService.saveHistorial(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // 2. Obtener todo el historial completo (GET http://localhost:8085/api/historial)
     @GetMapping
     public ResponseEntity<List<HistorialResponseDTO>> obtenerTodoElHistorial() {
         List<HistorialResponseDTO> historial = historialService.getAllHistorial();
         return ResponseEntity.ok(historial);
     }
 
-    // 3. Obtener un registro específico por su ID (GET http://localhost:8085/api/historial/{id})
     @GetMapping("/{id}")
     public ResponseEntity<HistorialResponseDTO> obtenerHistorialPorId(@PathVariable Long id) {
         HistorialResponseDTO response = historialService.findByIdOrThrow(id);
         return ResponseEntity.ok(response);
     }
 
-    // 4. Obtener la línea de tiempo/trazabilidad de un envío específico (GET http://localhost:8085/api/historial/envio/{envioId})
     @GetMapping("/envio/{envioId}")
     public ResponseEntity<List<HistorialResponseDTO>> obtenerHistorialPorEnvio(@PathVariable Long envioId) {
         List<HistorialResponseDTO> historialPorEnvio = historialService.getHistorialByEnvioId(envioId);

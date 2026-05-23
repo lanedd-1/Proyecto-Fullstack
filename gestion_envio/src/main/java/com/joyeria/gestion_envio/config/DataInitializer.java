@@ -18,13 +18,11 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Evitamos duplicar datos si la base de datos ya tiene envíos
         if (envioRep.count() > 0) {
             log.info("Tabla Envios con datos precargados, se omite la carga inicial");
             return;
         }
 
-        // Creamos un envío de prueba asociado a la Venta 1 y Dirección 1
         Envio envio1 = new Envio();
         envio1.setIdVenta(1L);
         envio1.setIdDireccion(1L);

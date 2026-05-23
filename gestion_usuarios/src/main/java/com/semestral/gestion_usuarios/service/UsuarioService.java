@@ -64,13 +64,11 @@ public UsuarioResponseDTO saveUsuario(UsuarioRequestDTO usuario) {
         Rol rol = rolRep.findById(usuario.getIdRol())
                 .orElseThrow(() -> new ResourceNotFoundException(usuario.getIdRol()));
 
-        /* BYPASS TEMPORAL: Desactivado hasta que exista el MS de Estados
         try {
             estadoClient.obtenerEstadoPorId(usuario.getIdEstado());
         } catch (feign.FeignException.NotFound e) {
             throw new ResourceNotFoundException(usuario.getIdEstado());
         }
-        */
 
         if (usuarioRep.findByCorreoU(usuario.getCorreoU()).isPresent()) {
             throw new DataIntegrityViolationException("Correo ya registrado: " + usuario.getCorreoU());
@@ -114,14 +112,13 @@ public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuario) {
         }
 
         if (usuario.getIdEstado() != null) {
-            /* BYPASS TEMPORAL: Desactivado hasta que exista el MS de Estados
             try {
                 estadoClient.obtenerEstadoPorId(usuario.getIdEstado());
             } catch (feign.FeignException.NotFound e) {
                 throw new ResourceNotFoundException(usuario.getIdEstado());
             }
-            */
-            existing.setIdEstado(usuario.getIdEstado()); // <-- Sigue actualizando el ID normalmente
+
+            existing.setIdEstado(usuario.getIdEstado());
         }
 
         Usuario saved = usuarioRep.save(existing);

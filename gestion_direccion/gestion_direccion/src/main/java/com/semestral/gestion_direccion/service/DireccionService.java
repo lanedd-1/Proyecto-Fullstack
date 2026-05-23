@@ -60,8 +60,6 @@ public class DireccionService {
                 throw new RuntimeException("Error de comunicación con el servicio de Usuarios.");
             }
         }
-            /* 
-
         if (req.getIdEstado() != null) {
             try {
                 estadoClient.obtenerEstadoPorId(req.getIdEstado());
@@ -71,8 +69,7 @@ public class DireccionService {
                 throw new RuntimeException("Error de comunicación con el servicio de Estados.");
             }
         }
-        */
-        // ----------------------------------------------
+
 
         Comuna comuna = comunaRep.findById(req.getIdComuna())
                 .orElseThrow(() -> new ResourceNotFoundException(req.getIdComuna()));
@@ -114,8 +111,6 @@ public class DireccionService {
             }
             existing.setIdUsuario(req.getIdUsuario());
         }
-        /* 
-
         if (req.getIdEstado() != null) {
             try {
                 estadoClient.obtenerEstadoPorId(req.getIdEstado());
@@ -126,10 +121,7 @@ public class DireccionService {
             }
             existing.setIdEstado(req.getIdEstado());
         }
-        */
-        // ----------------------------------------------------------
-        
-        // Si tienes el bypass activo, igual necesitamos actualizar los campos en la entidad:
+
         if (req.getIdUsuario() != null) existing.setIdUsuario(req.getIdUsuario());
         if (req.getIdEstado() != null) existing.setIdEstado(req.getIdEstado());
 
@@ -157,15 +149,15 @@ public class DireccionService {
             if (r != null) nombreRegion = r.getNombreRegion();
         }
 
-        // Agregamos idUsuario e idEstado a la respuesta
+
         return new DireccionResponseDTO(
                 d.getIdDireccion(),
                 d.getCalle(),
                 d.getNumero(),
                 nombreComuna,
                 nombreRegion,
-                d.getIdUsuario(),  // <--- Revisa que tu DTO acepte estos parámetros
-                d.getIdEstado()    // <--- Revisa que tu DTO acepte estos parámetros
+                d.getIdUsuario(),  
+                d.getIdEstado()    
         );
     }
 }

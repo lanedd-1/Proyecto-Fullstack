@@ -23,6 +23,7 @@ import com.semestral.inventario.repository.PasilloRepository;
 import com.semestral.inventario.repository.UbicacionRepository;
 
 import feign.FeignException;
+import com.semestral.inventario.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -89,7 +90,7 @@ public class InventarioService {
             return idProd;
             
         } catch (FeignException.NotFound ex) {
-            throw new RuntimeException("El producto no existe");
+            throw new ResourceNotFoundException(idProd);
         } catch (FeignException e){
             throw new RuntimeException("No se puede contactar con el microservicio de especies: " + e.getMessage());
         }
@@ -118,6 +119,8 @@ public class InventarioService {
 
 
 public List<InventarioResponseDTO> getStockPorProducto (Long idPps){
+
+    validarProd(idPps);
     return inventarioRe.findByIdProd(idPps).stream()
     .map(this::convertToDTO).collect(Collectors.toList());
 }

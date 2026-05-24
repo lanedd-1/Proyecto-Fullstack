@@ -55,7 +55,8 @@ public class Controller {
         return ResponseEntity.ok(invService.getStockPorProducto(id));
     }
 
-    @GetMapping()
+    @GetMapping() 
+    
     public ResponseEntity<List<InventarioResponseDTO>> obtenerTodoElStock() {
         return ResponseEntity.ok(invService.getTodoStock());
     }

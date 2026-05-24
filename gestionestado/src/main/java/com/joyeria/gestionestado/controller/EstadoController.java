@@ -57,10 +57,5 @@ public class EstadoController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        estadoService.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
 
 }

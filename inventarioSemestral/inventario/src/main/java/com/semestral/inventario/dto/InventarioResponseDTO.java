@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InventarioResponseDTO {
 
-    private Long idPps;             // id unico
+    private Long idPps;            
     private Long idProd;
-    private String nombrePasillo;   // en que pasillo esta
-    private String nombreEstante;   // en que estante esta
-    private Integer stock;          // la cantidad disponible en este lugar específico
+    private String nombrePasillo;   
+    private String nombreEstante;   
+    private Integer stock;        
 }

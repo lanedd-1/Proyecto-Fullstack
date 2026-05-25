@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UbicacionResponseDTO {
 
-    private Long idPasEst; // El ID de la combinación
+    private Long idPasEst; 
     private String nombrePasillo;
     private String nombreEstante;
 }

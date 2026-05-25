@@ -29,27 +29,26 @@ import com.semestral.productos.exception.ResourceNotFoundException;
 public class ProductoController {
 
     private final ProductoService prodService;
-    //Creacion de endpoints
-    //get (por id)
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductoResponseDTO> encontrarPorId(@PathVariable Long id){
         return prodService.encontrarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    //get (todos los productos)
+
     @GetMapping()
     public ResponseEntity<List<ProductoResponseDTO>> obtenerProductos() {
         return ResponseEntity.ok(prodService.getAllProductos());
     }
 
-    //post
+
     @PostMapping("/agregar")
     public ResponseEntity<ProductoResponseDTO>agregarProd(@Valid @RequestBody ProductoRequestDTO prod){
         return ResponseEntity.status(201).body(prodService.saveProducto(prod));
         
     }
 
-    //delete (id)
+
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Long id){
         if (prodService.encontrarPorId(id).isEmpty()) {

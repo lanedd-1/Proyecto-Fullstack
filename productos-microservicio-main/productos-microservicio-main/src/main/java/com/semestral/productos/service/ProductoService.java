@@ -25,7 +25,7 @@ public class ProductoService {
     private final ProductoRepository productoRepository;
     private final CategoriaService categoriaService;
 
-    // Convertimos la lista de entidades a lista de DTOs
+
     public List<ProductoResponseDTO> getAllProductos() {
         return productoRepository.findAll().stream()
                 .map(this::convertToDTO)
@@ -36,7 +36,6 @@ public class ProductoService {
         return productoRepository.findById(id).map(this::convertToDTO);
     }
     
-    // Recibe entidad (validada en Controller) y devuelve DTO
     public ProductoResponseDTO saveProducto(ProductoRequestDTO productos) {
         if (productos.getIdCat() == null) {
             throw new IllegalArgumentException("El id de categoría es obligatorio");
@@ -60,7 +59,6 @@ public class ProductoService {
     }
 
 
-    // Método Helper para mapear
     private ProductoResponseDTO convertToDTO(Productos p) {
         return new ProductoResponseDTO(
             p.getIdProd(),

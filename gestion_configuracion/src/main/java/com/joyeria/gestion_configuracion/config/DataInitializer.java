@@ -24,14 +24,14 @@ public class DataInitializer implements CommandLineRunner{
         }
 
         configuracionRepository.save(new Configuracion(
-                1L,         // id fijo, siempre sera 1
-                8,          // longitud minima
-                20,         // longitud maxima
-                true,       // requiere mayuscula
-                true,       // requiere minuscula
-                true,       // requiere numero
-                true,       // requiere caracter especial
-                "!@#$%&*"   // caracteres especiales permitidos
+                1L,        
+                8,          
+                20,         
+                true,       
+                true,       
+                true,       
+                true,       
+                "!@#$%&*"   
         ));
 
         log.info("DataInitializer: configuracion inicial cargada.");

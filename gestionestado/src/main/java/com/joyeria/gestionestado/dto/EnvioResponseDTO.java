@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EnvioResponseDTO {
 
-     private Long idEnvio;
+    private Long idEnvio;
     private String fechaEnvio;
     private String fechaRecepcion;
     private Long idVenta;

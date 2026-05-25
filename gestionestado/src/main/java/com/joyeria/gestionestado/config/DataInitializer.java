@@ -32,6 +32,7 @@ public class DataInitializer implements CommandLineRunner{
         estadoRepository.save(new Estado(null, "En camino"));
         estadoRepository.save(new Estado(null, "Entregado"));
         estadoRepository.save(new Estado(null, "Cancelado"));
+        estadoRepository.save(new Estado(null, "PREPARACION"));
 
         log.info("DataInitializer: {} estados cargados correctamente.", estadoRepository.count());
 

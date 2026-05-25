@@ -1,6 +1,5 @@
 package com.joyeria.gestionestado.dto;
 
-import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EnvioResponseDTO {
-    
-    private Long idEnvio;
-    private LocalDate fEnvio;
-    private LocalDate fRecep;
-    private Long idEstado;
+
+     private Long idEnvio;
+    private String fechaEnvio;
+    private String fechaRecepcion;
+    private Long idVenta;
+    private Long idDireccion;
+    private String estado;
 
 }

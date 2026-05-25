@@ -62,7 +62,7 @@ public class EstadoService {
                     return new EstadoNotFoundException(id);
                 });
 
-        List<EnvioResponseDTO> envios = obtenerEnviosDesdeMs(id);
+        List<EnvioResponseDTO> envios = obtenerEnviosDesdeMs(estado.getNombreEstado());
 
         log.info("Estado '{}' tiene {} envíos asociados",
                 estado.getNombreEstado(), envios.size());
@@ -115,36 +115,25 @@ public class EstadoService {
         return mapearAResponseDTO(actualizado);
     }
 
-    @Transactional
-    public void eliminar(Long id) {
-        log.info("Eliminando estado ID: {}", id);
-        estadoRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Estado inexistente ID: {}", id);
-                    return new EstadoNotFoundException(id);
-                });
-        estadoRepository.deleteById(id);
-        log.info("Estado ID {} eliminado", id);
-    }
 
 
-     private List<EnvioResponseDTO> obtenerEnviosDesdeMs(Long idEstado) {
-    try {
-        log.debug("Llamando a ms-envio via Feign para estado ID: {}", idEstado);
-        List<EnvioResponseDTO> todos = envioClient.obtenerTodos();
-       
-        List<EnvioResponseDTO> filtrados = todos.stream()
-                .filter(e -> idEstado.equals(e.getIdEstado()))
-                .collect(Collectors.toList());
-        log.debug("ms-envio retornó {} envíos para estado ID: {}", filtrados.size(), idEstado);
-        return filtrados;
-    } catch (FeignException ex) {
-        log.warn("ms-envio no disponible | Status: {} | Se retorna lista vacía", ex.status());
-        return Collections.emptyList();
-    }
+    private List<EnvioResponseDTO> obtenerEnviosDesdeMs(String nombreEstado) {
+        try {
+            log.debug("Llamando a ms-envio via Feign para estado: '{}'", nombreEstado);
+            List<EnvioResponseDTO> todos = envioClient.obtenerTodos();
+            List<EnvioResponseDTO> filtrados = todos.stream()
+                    .filter(e -> nombreEstado.equalsIgnoreCase(e.getEstado()))
+                    .collect(Collectors.toList());
+            log.debug("ms-envio retornó {} envíos para estado '{}'", filtrados.size(), nombreEstado);
+            return filtrados;
+        } catch (FeignException ex) {
+            log.warn("ms-envio no disponible | Status: {} | Se retorna lista vacía", ex.status());
+            return Collections.emptyList();
+        }
     }
 
     private EstadoResponseDTO mapearAResponseDTO(Estado e) {
         return new EstadoResponseDTO(e.getIdEstado(), e.getNombreEstado());
     }
+
 }

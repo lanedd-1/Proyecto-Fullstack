@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class InventarioRequestDTO {
 
     private Long idProd;   
-    private Long idPasillo;    // A que pasillo va
-    private Long idEstante;    // A que estante va
-    private Integer cantidad;  // Cuantas unidades se van a sumar o restar
+    private Long idPasillo;    
+    private Long idEstante;    
+    private Integer cantidad;  
 
 }

@@ -98,7 +98,7 @@ public class DetalleService {
                 Map<String, Object> producto = productoClient.obtenerPorId(d.getProductoId());
                 dto.setProductoNombre(getNombreProducto(producto));
             } catch (Exception e) {
-                // Si el servicio de productos no está disponible o retorna error, devolvemos al menos el productoId.
+                
             }
         }
         return dto;

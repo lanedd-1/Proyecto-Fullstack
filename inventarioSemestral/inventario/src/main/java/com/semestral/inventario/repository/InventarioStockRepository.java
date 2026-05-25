@@ -13,7 +13,7 @@ import com.semestral.inventario.model.Inventario;
 @Repository
 public interface InventarioStockRepository extends JpaRepository<Inventario, Long> {
     
-    // Cambiamos el nombre mágico por una @Query explícita
+
     @Query("SELECT i FROM Inventario i WHERE i.idPasEstante.idPasEst = :idUbicacion")
     List<Inventario> findByUbicacionId(@Param("idUbicacion") Long idUbicacion);
 

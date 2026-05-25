@@ -23,7 +23,7 @@ public class DataInitializer implements CommandLineRunner{
     private final CategoriaRepository catRepo;
 
     @Override
-    //determinar si la tabla presenta datos ya cargados
+
     public void run(String... args){
         Categoria categoria = catRepo.findById(1L)
                 .orElseGet(() -> catRepo.save(new Categoria(null, "Pulseras")));
@@ -33,7 +33,6 @@ public class DataInitializer implements CommandLineRunner{
             return;
         }
 
-        //sino se crean datos para manipular la BD
         ProdRepo.save(new Productos(
             null,
             "LMiun122",

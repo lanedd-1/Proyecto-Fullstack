@@ -42,7 +42,7 @@ public class DataInitializer {
 			v1.getDetalles().add(d1);
 			ventaRepo.save(v1);
 
-			// Venta 2 con un detalle
+
 			Venta v2 = new Venta();
 			v2.setFechaV(LocalDateTime.now().minusDays(1));
 			v2.setTotal(299.99);
@@ -58,7 +58,7 @@ public class DataInitializer {
 			v2.getDetalles().add(d2);
 			ventaRepo.save(v2);
 
-			// Venta 3 con múltiples detalles
+
 			Venta v3 = new Venta();
 			v3.setFechaV(LocalDateTime.now());
 			v3.setTotal(180.0);
@@ -82,8 +82,8 @@ public class DataInitializer {
 			v3.getDetalles().add(d4);
 			ventaRepo.save(v3);
 
-			log.info("Seeded ventas: {}", List.of(v1.getIdVenta(), v2.getIdVenta(), v3.getIdVenta()));
-			log.info("Seeded detalles: {}", List.of(d1.getIdDetalle(), d2.getIdDetalle(), d3.getIdDetalle(), d4.getIdDetalle()));
+			log.info("ventas: {}", List.of(v1.getIdVenta(), v2.getIdVenta(), v3.getIdVenta()));
+			log.info("detalles: {}", List.of(d1.getIdDetalle(), d2.getIdDetalle(), d3.getIdDetalle(), d4.getIdDetalle()));
 		};
 	}
 

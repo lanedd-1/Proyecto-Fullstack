@@ -31,7 +31,6 @@ public class Controller {
 	private final VentaService ventaService;
 	private final DetalleService detalleService;
 
-	// Ventas
 	@GetMapping("/verVentas")
 	public List<VentaResponseDTO> getAllVentas() {
 		return ventaService.obtenerTodas();
@@ -48,7 +47,6 @@ public class Controller {
 		return ventaService.crearVenta(dto);
 	}
 
-	// Detalles
 	@GetMapping("/verDetalles")
 	public List<DetalleResponseDTO> getAllDetalles() {
 		return detalleService.obtenerTodos();

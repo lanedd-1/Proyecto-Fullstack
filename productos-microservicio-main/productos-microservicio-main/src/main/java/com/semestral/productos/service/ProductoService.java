@@ -1,5 +1,6 @@
 package com.semestral.productos.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import java.util.Optional;
@@ -80,5 +81,33 @@ public class ProductoService {
 
     public void eliminarProd (Long id){
           productoRepository.deleteById(id);
+    }
+
+    public ProductoResponseDTO updatePrecio(Long id, BigDecimal precio) {
+        Productos prod = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+        prod.setPrecioUnitario(precio);
+        Productos saved = productoRepository.save(prod);
+        return convertToDTO(saved);
+    }
+
+    public ProductoResponseDTO updateDescripcion(Long id, String descripcion) {
+        Productos prod = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+        if (descripcion != null && !descripcion.isBlank()) {
+            prod.setDescProd(descripcion);
+        }
+        Productos saved = productoRepository.save(prod);
+        return convertToDTO(saved);
+    }
+
+    public ProductoResponseDTO updateStock(Long id, Long stock) {
+        Productos prod = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+        if (stock != null) {
+            prod.setStock(stock);
+        }
+        Productos saved = productoRepository.save(prod);
+        return convertToDTO(saved);
     }
 }

@@ -3,6 +3,7 @@ package com.joyeria.gestionestado.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,14 +47,14 @@ public class EstadoController {
     }
 
     @PostMapping
-    public ResponseEntity<EstadoResponseDTO> create(@Valid @RequestBody EstadoRequestDTO req) {
-        EstadoResponseDTO created = estadoService.crear(req);
-        return ResponseEntity.created(URI.create("/api/estados/" + created.getIdEstado())).body(created);
+    public ResponseEntity<EstadoResponseDTO> crearEstado(@Valid @RequestBody EstadoRequestDTO request) {
+        EstadoResponseDTO response = estadoService.saveEstado(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EstadoResponseDTO> update(@PathVariable Long id, @Valid @RequestBody EstadoRequestDTO req) {
-        EstadoResponseDTO updated = estadoService.actualizar(id, req);
+        EstadoResponseDTO updated = estadoService.update(id, req);
         return ResponseEntity.ok(updated);
     }
 

@@ -75,7 +75,7 @@ public class EstadoService {
     }
 
     @Transactional
-    public EstadoResponseDTO crear(EstadoRequestDTO dto) {
+    public EstadoResponseDTO saveEstado(EstadoRequestDTO dto) {
         log.info("Creando estado: '{}'", dto.getNombreEstado());
 
         if (estadoRepository.existsByNombreEstadoIgnoreCase(dto.getNombreEstado())) {
@@ -92,7 +92,7 @@ public class EstadoService {
     }
 
     @Transactional
-    public EstadoResponseDTO actualizar(Long id, EstadoRequestDTO dto) {
+    public EstadoResponseDTO update(Long id, EstadoRequestDTO dto) {
         log.info("Actualizando estado ID: {}", id);
 
         Estado existente = estadoRepository.findById(id)

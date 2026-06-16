@@ -51,7 +51,6 @@ public class ProductoService {
             productos.getDescProd(),
             productos.getPrecioUnitario(),
             productos.getFoto(),
-            productos.getStock(),
             categoria
         );
 
@@ -68,7 +67,6 @@ public class ProductoService {
             p.getDescProd(),
             p.getPrecioUnitario(),
             p.getFoto(),
-            p.getStock(),
             p.getIdCat()
         );
     }
@@ -101,13 +99,5 @@ public class ProductoService {
         return convertToDTO(saved);
     }
 
-    public ProductoResponseDTO updateStock(Long id, Long stock) {
-        Productos prod = productoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id));
-        if (stock != null) {
-            prod.setStock(stock);
-        }
-        Productos saved = productoRepository.save(prod);
-        return convertToDTO(saved);
-    }
+
 }

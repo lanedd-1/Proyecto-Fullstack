@@ -19,6 +19,5 @@ public class ProductoResponseDTO {
     private String descProd;
     private BigDecimal precioUnitario;
     private String foto;
-    private Long stock;
     private Categoria idCat;
 }

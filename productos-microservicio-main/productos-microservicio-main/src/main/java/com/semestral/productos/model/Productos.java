@@ -51,8 +51,7 @@ private BigDecimal precioUnitario;
 private String foto;
 
 
-@Column(name = "stock_total", nullable = false)
-private Long stock;
+
 
 
 @ManyToOne

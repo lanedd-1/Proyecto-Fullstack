@@ -25,9 +25,6 @@ public class ProductoRequestDTO {
     private BigDecimal precioUnitario;
     @NotBlank(message = "La URL no puede estar vacia")
     private String foto;
-    @NotNull(message = "El stock no puede estar vacio")
-    @Positive(message = "El stock debe ser mayor a 0")
-    private Long stock;
     @NotNull(message = "La categoría no puede estar vacía")
     private Long idCat;
 

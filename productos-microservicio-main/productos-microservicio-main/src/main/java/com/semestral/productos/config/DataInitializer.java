@@ -40,7 +40,6 @@ public class DataInitializer implements CommandLineRunner{
             "pulsera de plata 9/25 con insignia de oro de 14K (58,5% oro)",
             new BigDecimal(85990),
             "https://images.pexels.com/photos/16304608/pexels-photo-16304608.jpeg",
-            25L, 
             categoria));
 
         ProdRepo.save(new Productos(
@@ -50,7 +49,6 @@ public class DataInitializer implements CommandLineRunner{
             "pulsera de plata 9/25 con insignia de oro de 14K (58,5% oro)",
             new BigDecimal(85990), 
             "https://images.pexels.com/photos/16304608/pexels-photo-16304608.jpeg",
-            25L,
             categoria));
 
         ProdRepo.save(new Productos(
@@ -60,7 +58,6 @@ public class DataInitializer implements CommandLineRunner{
         "pulsera de plata 9/25 con insignia de oro de 14K",
         new BigDecimal(85990),
         "https://images.pexels.com/photos/16304608/pexels-photo-16304608.jpeg",
-        25L, 
         categoria));    
     }
 

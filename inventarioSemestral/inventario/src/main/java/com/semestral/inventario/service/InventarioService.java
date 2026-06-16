@@ -12,6 +12,7 @@ import com.semestral.inventario.dto.EstanteRequestDTO;
 import com.semestral.inventario.dto.InventarioRequestDTO;
 import com.semestral.inventario.dto.InventarioResponseDTO;
 import com.semestral.inventario.dto.PasilloRequestDTO;
+import com.semestral.inventario.dto.ProductoDTO;
 import com.semestral.inventario.dto.UbicacionRequestDTO;
 import com.semestral.inventario.model.Estante;
 import com.semestral.inventario.model.Inventario;
@@ -25,17 +26,20 @@ import com.semestral.inventario.repository.UbicacionRepository;
 import feign.FeignException;
 import com.semestral.inventario.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class InventarioService {
-
 
     private final InventarioStockRepository inventarioRe;
     private final UbicacionRepository ubicacionRe;
     private final PasilloRepository pasillRe;
     private final EstanteRepository estanteRe;
     private final ProductosClient prodCli;
+    
+    private ProductoDTO productoActual;
 
     public InventarioResponseDTO agregarStock(InventarioRequestDTO re){
 
@@ -86,13 +90,13 @@ public class InventarioService {
 
     public Long validarProd(Long idProd){
         try {
-            prodCli.obtenerId(idProd);
+            this.productoActual = prodCli.obtenerProducto(idProd);
             return idProd;
             
         } catch (FeignException.NotFound ex) {
             throw new ResourceNotFoundException(idProd);
         } catch (FeignException e){
-            throw new RuntimeException("No se puede contactar con el microservicio de especies: " + e.getMessage());
+            throw new RuntimeException("No se puede contactar con el microservicio de productos: " + e.getMessage());
         }
 
     }
@@ -122,11 +126,11 @@ public List<InventarioResponseDTO> getStockPorProducto (Long idPps){
 
     validarProd(idPps);
     return inventarioRe.findByIdProd(idPps).stream()
-    .map(this::convertToDTO).collect(Collectors.toList());
+    .map(this::convertToDTOWithProduct).collect(Collectors.toList());
 }
 
 public List<InventarioResponseDTO> getTodoStock(){
-return inventarioRe.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+return inventarioRe.findAll().stream().map(this::convertToDTOWithProduct).collect(Collectors.toList());
 
 }
 
@@ -135,9 +139,41 @@ return inventarioRe.findAll().stream().map(this::convertToDTO).collect(Collector
         return new InventarioResponseDTO(
             s.getIdInv(),
             s.getIdProd(),
+            productoActual != null ? productoActual.getSku() : "N/A",
+            productoActual != null ? productoActual.getNombreProd() : "N/A",
+            productoActual != null ? productoActual.getPrecioUnitario() : 0.0,
             s.getIdPasEstante().getIdPasillo().getNombrePasillo(),
             s.getIdPasEstante().getIdEstante().getNombreEstante(),
             s.getStock()
         );
+    }
+
+    private InventarioResponseDTO convertToDTOWithProduct(Inventario s) {
+        try {
+            ProductoDTO producto = prodCli.obtenerProducto(s.getIdProd());
+            log.info("Producto obtenido: {}", producto);
+            return new InventarioResponseDTO(
+                s.getIdInv(),
+                s.getIdProd(),
+                producto.getSku(),
+                producto.getNombreProd(),
+                producto.getPrecioUnitario(),
+                s.getIdPasEstante().getIdPasillo().getNombrePasillo(),
+                s.getIdPasEstante().getIdEstante().getNombreEstante(),
+                s.getStock()
+            );
+        } catch (Exception e) {
+            log.error("Error al obtener producto con ID: {}, Error: {}", s.getIdProd(), e.getMessage(), e);
+            return new InventarioResponseDTO(
+                s.getIdInv(),
+                s.getIdProd(),
+                "N/A",
+                "Producto no disponible",
+                0.0,
+                s.getIdPasEstante().getIdPasillo().getNombrePasillo(),
+                s.getIdPasEstante().getIdEstante().getNombreEstante(),
+                s.getStock()
+            );
+        }
     }
 }

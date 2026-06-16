@@ -44,11 +44,24 @@ public class DataInitializer implements CommandLineRunner{
             return;
         }
 
-
         invRe.save(new Inventario(
             null,
             25,
             4L,
+            ubi
+        ));
+
+        invRe.save(new Inventario(
+            null,
+            50,
+            1L,
+            ubi
+        ));
+
+        invRe.save(new Inventario(
+            null,
+            30,
+            2L,
             ubi
         ));
     }

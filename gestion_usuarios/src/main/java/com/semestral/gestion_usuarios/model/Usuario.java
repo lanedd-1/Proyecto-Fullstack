@@ -30,7 +30,7 @@ public class Usuario {
     @Schema(description = "RUT del usuario con guion y dígito verificador", example = "12345678-9")
     private String rutU;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     @Schema(description = "Correo electrónico institucional o de contacto único", example = "jose.recabarren@duocuc.cl")
     private String correoU;
 

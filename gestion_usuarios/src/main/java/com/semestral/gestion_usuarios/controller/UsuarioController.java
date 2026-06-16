@@ -48,6 +48,46 @@ public class UsuarioController {
         log.info("[UsuarioController] GET /api/usuarios");
         return ResponseEntity.ok(usuarioService.getAllUsuarios());
     }
+    @Operation(
+    summary = "Iniciar sesión de usuario",
+    description = "Valida las credenciales de acceso de forma directa utilizando un mapa de parámetros, evitando la creación de DTOs adicionales."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Autenticación exitosa",
+            content = @Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = @Schema(implementation = UsuarioResponseDTO.class)
+        )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Petición incorrecta o parámetros faltantes",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Conflict: Credenciales incorrectas o usuario inexistente",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioResponseDTO> login(
+        @Parameter(
+            description = "JSON con las llaves 'correo' y 'clave'", 
+            required = true,
+            example = "{\"correo\": \"admin@JoyeriaEter.com\", \"clave\": \"asdf1234!\"}"
+        )
+        @RequestBody java.util.Map<String, String> req
+    ) {
+    log.info("[UsuarioController] POST /api/usuarios/login recibido");
+    
+    String correo = req.get("correo");
+    String clave = req.get("clave");
+    UsuarioResponseDTO responseDto = usuarioService.loginDirecto(correo, clave);
+    return ResponseEntity.ok(responseDto);
+    }
 
     @Operation(
         summary = "Obtener usuario por ID",

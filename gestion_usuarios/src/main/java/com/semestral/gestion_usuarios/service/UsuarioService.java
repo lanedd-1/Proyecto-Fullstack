@@ -111,6 +111,28 @@ public class UsuarioService {
         
         return convertToDto(guardado);
     }
+    @Transactional(readOnly = true)
+    public UsuarioResponseDTO loginDirecto(String correo, String clave) {
+        log.info("[UsuarioService] Intentando iniciar sesión para el correo: {}", correo);
+
+        if (correo == null || clave == null || correo.isBlank() || clave.isBlank()) {
+            log.warn("[UsuarioService] Fallo de login: Credenciales vacías o nulas");
+            throw new BusinessConflictException("El correo y la contraseña son obligatorios");
+        }
+        Usuario usuario = usuarioRep.findByCorreoU(correo)
+            .orElseThrow(() -> {
+                log.warn("[UsuarioService] Fallo de login: El correo '{}' no existe", correo);
+                return new BusinessConflictException("Credenciales inválidas: El correo o la contraseña son incorrectos");
+            });
+        boolean passwordMatches = passwordEncoder != null ? passwordEncoder.matches(clave, usuario.getClaveU()) : clave.equals(usuario.getClaveU());
+        if (!passwordMatches) {
+            log.warn("[UsuarioService] Fallo de login: Contraseña incorrecta para el correo '{}'", correo);
+            throw new BusinessConflictException("Credenciales inválidas: El correo o la contraseña son incorrectos");
+        }
+
+        log.info("[UsuarioService] Login exitoso para el usuario ID: {}", usuario.getIdUsuario());
+        return convertToDto(usuario);
+    }
 
     @Transactional
     public UsuarioResponseDTO update(Long id, UsuarioRequestDTO usuario) {

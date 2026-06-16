@@ -1,6 +1,7 @@
 package com.semestral.gestion_usuarios.config;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.semestral.gestion_usuarios.model.Rol;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DataInitializer implements CommandLineRunner {
     private final UsuarioRepository usuarioRep;
     private final RolRepository rolRep;
+    private final BCryptPasswordEncoder passwordEncoder;
     @Override
     public void run(String... args){
         if(usuarioRep.count()>0){
@@ -40,8 +42,8 @@ public class DataInitializer implements CommandLineRunner {
         Usuario usuarioAdmin = new Usuario();
         usuarioAdmin.setNombreU("Administrador");
         usuarioAdmin.setRutU("11111111-1");
-        usuarioAdmin.setCorreoU("admin@JoyeriaEter.com");
-        usuarioAdmin.setClaveU("asdf1234!");
+        usuarioAdmin.setCorreoU("admin1@JoyeriaEter.com");
+        usuarioAdmin.setClaveU(passwordEncoder.encode("asdf1234!"));
         usuarioAdmin.setRol(admin);
         usuarioAdmin.setIdEstado(1L);
         usuarioRep.save(usuarioAdmin);
@@ -50,7 +52,7 @@ public class DataInitializer implements CommandLineRunner {
         usuarioBodeg.setNombreU("Bodeguero");
         usuarioBodeg.setRutU("11111111-1");
         usuarioBodeg.setCorreoU("admin@JoyeriaEter.com");
-        usuarioBodeg.setClaveU("asdf1234!");
+        usuarioBodeg.setClaveU(passwordEncoder.encode("asdf1234!"));
         usuarioBodeg.setRol(bodeguero);
         usuarioBodeg.setIdEstado(1L);
         usuarioRep.save(usuarioBodeg);
@@ -59,7 +61,7 @@ public class DataInitializer implements CommandLineRunner {
         usuario1.setNombreU("Usuario ejemplo");
         usuario1.setRutU("22222222-2");
         usuario1.setCorreoU("user@example.com");
-        usuario1.setClaveU("asdf1234!");
+        usuario1.setClaveU(passwordEncoder.encode("asdf1234!"));
         usuario1.setRol(user);
         usuario1.setIdEstado(1L);
         usuarioRep.save(usuario1);

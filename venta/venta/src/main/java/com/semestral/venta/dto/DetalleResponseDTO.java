@@ -1,6 +1,7 @@
 package com.semestral.venta.dto;
 
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,8 @@ public class DetalleResponseDTO {
     private Integer cantidad;
 
     private Double subTotal;
+
+    private Long ventaId;
 
     private Long productoId;
 

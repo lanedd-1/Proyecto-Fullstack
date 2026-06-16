@@ -3,6 +3,7 @@ package com.semestral.venta.service;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -45,6 +46,9 @@ public class DetalleService {
         if (dto.getProductoId() == null) {
             throw new IllegalArgumentException("productoId es obligatorio para crear un detalle");
         }
+        if (dto.getCantidad() == null || dto.getCantidad() <= 0) {
+            throw new IllegalArgumentException("cantidad debe ser mayor a 0");
+        }
 
         Venta venta = ventaRe.findById(dto.getVentaId())
             .orElseThrow(() -> new ResourceNotFoundException(dto.getVentaId()));
@@ -54,42 +58,114 @@ public class DetalleService {
             throw new ResourceNotFoundException(dto.getProductoId());
         }
 
-        Detalle d = new Detalle();
-        d.setCantidad(dto.getCantidad());
-        d.setSubTotal(dto.getSubTotal());
-        d.setIdVenta(venta);
-        d.setProductoId(dto.getProductoId());
-        Detalle nuevo = detalleRe.save(d);
-        return convertToDTO(nuevo);
+        Double precioProducto = extraerPrecioProducto(producto);
+        Double subTotalCalculado = dto.getCantidad() * precioProducto;
+
+    
+        Optional<Detalle> detalleExistente = detalleRe.findByIdVenta_IdVentaAndProductoId(dto.getVentaId(), dto.getProductoId());
+        
+        Detalle detalle;
+        if (detalleExistente.isPresent()) {
+            detalle = detalleExistente.get();
+            Double subTotalAnterior = detalle.getSubTotal();
+            Integer nuevaCantidad = detalle.getCantidad() + dto.getCantidad();
+            Double nuevoSubTotal = nuevaCantidad * precioProducto;
+            
+            detalle.setCantidad(nuevaCantidad);
+            detalle.setSubTotal(nuevoSubTotal);
+            detalle = detalleRe.save(detalle);
+            
+
+            Double totalActual = venta.getTotal() != null ? venta.getTotal() : 0.0;
+            venta.setTotal(totalActual - subTotalAnterior + nuevoSubTotal);
+            ventaRe.save(venta);
+        } else {
+
+            detalle = new Detalle();
+            detalle.setCantidad(dto.getCantidad());
+            detalle.setSubTotal(subTotalCalculado);
+            detalle.setIdVenta(venta);
+            detalle.setProductoId(dto.getProductoId());
+            detalle = detalleRe.save(detalle);
+            
+
+            Double totalActual = venta.getTotal() != null ? venta.getTotal() : 0.0;
+            venta.setTotal(totalActual + subTotalCalculado);
+            ventaRe.save(venta);
+        }
+        
+        return convertToDTO(detalle);
     }
 
     public DetalleResponseDTO actualizarDetalle(Long id, DetalleRequestDTO dto) {
         Detalle existente = detalleRe.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Detalle no encontrado con id: " + id));
+
+        Double subTotalAnterior = existente.getSubTotal();
+        Long ventaOriginalId = existente.getIdVenta() != null ? existente.getIdVenta().getIdVenta() : null;
+        Venta ventaOriginal = existente.getIdVenta();
+
         existente.setCantidad(dto.getCantidad());
-        existente.setSubTotal(dto.getSubTotal());
-        if (dto.getVentaId() != null) {
-            Venta venta = ventaRe.findById(dto.getVentaId())
+
+        Long productoId = dto.getProductoId() != null ? dto.getProductoId() : existente.getProductoId();
+        if (productoId == null) {
+            throw new IllegalArgumentException("El productoId es obligatorio");
+        }
+
+        Map<String, Object> producto = productoClient.obtenerPorId(productoId);
+        if (producto == null || producto.get("idProd") == null) {
+            throw new ResourceNotFoundException(productoId);
+        }
+        existente.setProductoId(productoId);
+
+        Double precioProducto = extraerPrecioProducto(producto);
+        Double subTotalNuevo = dto.getCantidad() * precioProducto;
+        existente.setSubTotal(subTotalNuevo);
+
+        Venta ventaDestino = ventaOriginal;
+        if (dto.getVentaId() != null && !dto.getVentaId().equals(ventaOriginalId)) {
+            ventaDestino = ventaRe.findById(dto.getVentaId())
                 .orElseThrow(() -> new ResourceNotFoundException(dto.getVentaId()));
-            existente.setIdVenta(venta);
+            existente.setIdVenta(ventaDestino);
         }
-        if (dto.getProductoId() != null) {
-            Map<String, Object> producto = productoClient.obtenerPorId(dto.getProductoId());
-            if (producto == null || producto.get("idProd") == null) {
-                throw new ResourceNotFoundException(dto.getProductoId());
-            }
-            existente.setProductoId(dto.getProductoId());
-        }
+
         Detalle actualizado = detalleRe.save(existente);
+
+        if (ventaOriginal != null) {
+            Double totalOriginal = ventaOriginal.getTotal() != null ? ventaOriginal.getTotal() : 0.0;
+            ventaOriginal.setTotal(totalOriginal - subTotalAnterior);
+            ventaRe.save(ventaOriginal);
+        }
+
+        if (ventaDestino != null) {
+            Double totalDestino = ventaDestino.getTotal() != null ? ventaDestino.getTotal() : 0.0;
+            ventaDestino.setTotal(totalDestino + subTotalNuevo);
+            ventaRe.save(ventaDestino);
+        }
+
         return convertToDTO(actualizado);
     }
 
+    public void eliminarDetalle(Long id) {
+        Detalle detalle = detalleRe.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Detalle no encontrado con id: " + id));
+        
+        if (detalle.getIdVenta() != null) {
+            Venta venta = detalle.getIdVenta();
+            Double totalActual = venta.getTotal() != null ? venta.getTotal() : 0.0;
+            venta.setTotal(totalActual - detalle.getSubTotal());
+            ventaRe.save(venta);
+        }
+        
+        detalleRe.deleteById(id);
+    }
 
     public DetalleResponseDTO convertToDTO(Detalle d) {
         DetalleResponseDTO dto = new DetalleResponseDTO(
             d.getIdDetalle(),
             d.getCantidad(),
             d.getSubTotal(),
+            d.getIdVenta() != null ? d.getIdVenta().getIdVenta() : null,
             d.getProductoId(),
             null
         );
@@ -110,5 +186,44 @@ public class DetalleService {
         }
         Object nombre = producto.get("nombreProd");
         return nombre != null ? nombre.toString() : null;
+    }
+
+    private Double extraerPrecioProducto(Map<String, Object> producto) {
+        if (producto == null) {
+            throw new IllegalArgumentException("Producto no encontrado");
+        }
+        
+        Double precio = null;
+        
+        if (producto.containsKey("precio")) {
+            precio = convertToDouble(producto.get("precio"));
+        } else if (producto.containsKey("precioProd")) {
+            precio = convertToDouble(producto.get("precioProd"));
+        } else if (producto.containsKey("precioUnitario")) {
+            precio = convertToDouble(producto.get("precioUnitario"));
+        }
+        
+        if (precio == null || precio <= 0) {
+            throw new IllegalArgumentException("El producto no tiene un precio válido");
+        }
+        
+        return precio;
+    }
+
+    private Double convertToDouble(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Double) {
+            return (Double) value;
+        }
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
+        }
+        try {
+            return Double.parseDouble(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

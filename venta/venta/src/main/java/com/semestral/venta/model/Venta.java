@@ -13,7 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,9 +33,9 @@ public class Venta {
     @Column(nullable = false)
     private LocalDateTime fechaV;
 
-    @Positive
+    @PositiveOrZero
     @Column(name = "totalVenta", nullable = false)
-    private Double total;
+    private Double total = 0.0;
 
     @OneToMany(mappedBy = "idVenta", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Detalle> detalles = new ArrayList<>();

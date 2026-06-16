@@ -2,17 +2,20 @@ package com.semestral.venta.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.semestral.venta.exception.ResourceNotFoundException;
-
+import com.semestral.venta.client.ProductoClient;
+import com.semestral.venta.dto.DetalleResponseDTO;
 import com.semestral.venta.dto.VentaRequestDTO;
 import com.semestral.venta.dto.VentaResponseDTO;
+import com.semestral.venta.exception.ResourceNotFoundException;
+import com.semestral.venta.model.Detalle;
 import com.semestral.venta.model.Venta;
-
 import com.semestral.venta.repository.VentaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,37 +25,71 @@ import lombok.RequiredArgsConstructor;
 public class VentaService {
 
     private final VentaRepository ventaRe;
+    private final ProductoClient productoClient;
 
     public List<VentaResponseDTO> obtenerTodas() {
-
         return ventaRe.findAll().stream()
             .map(this::convertToDTO)
             .collect(Collectors.toList());
     }
 
     public VentaResponseDTO obtenerPorId(Long id) {
-
         Venta venta = ventaRe.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException(id));
         return convertToDTO(venta);
     }
 
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
-
-    Venta venta = new Venta();
-    venta.setFechaV(parseFecha(dto.getFechaV()));
-    venta.setTotal(dto.getTotal());
-    
-    Venta nuevaVenta = ventaRe.save(venta);
-    return convertToDTO(nuevaVenta);
-}
+        Venta venta = new Venta();
+        venta.setFechaV(parseFecha(dto.getFechaV()));
+        venta.setTotal(0.0);
+        Venta nuevaVenta = ventaRe.save(venta);
+        return convertToDTO(nuevaVenta);
+    }
 
     public VentaResponseDTO convertToDTO(Venta venta) {
-
         VentaResponseDTO dto = new VentaResponseDTO();
         dto.setIdVenta(venta.getIdVenta());
         dto.setFechaV(venta.getFechaV() != null ? venta.getFechaV().toString() : null);
-        dto.setTotal(venta.getTotal());
+        dto.setTotal(calculateTotal(venta));
+        dto.setDetalles(convertDetalles(venta.getDetalles()));
+        return dto;
+    }
+
+    private Double calculateTotal(Venta venta) {
+        if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
+            return 0.0;
+        }
+        return venta.getDetalles().stream()
+            .mapToDouble(Detalle::getSubTotal)
+            .sum();
+    }
+
+    private List<DetalleResponseDTO> convertDetalles(List<Detalle> detalles) {
+        if (detalles == null || detalles.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return detalles.stream()
+            .map(this::convertDetalleToDTO)
+            .collect(Collectors.toList());
+    }
+
+    private DetalleResponseDTO convertDetalleToDTO(Detalle detalle) {
+        DetalleResponseDTO dto = new DetalleResponseDTO(
+            detalle.getIdDetalle(),
+            detalle.getCantidad(),
+            detalle.getSubTotal(),
+            detalle.getIdVenta() != null ? detalle.getIdVenta().getIdVenta() : null,
+            detalle.getProductoId(),
+            null
+        );
+        if (detalle.getProductoId() != null) {
+            try {
+                Map<String, Object> producto = productoClient.obtenerPorId(detalle.getProductoId());
+                dto.setProductoNombre(producto != null ? String.valueOf(producto.get("nombreProd")) : null);
+            } catch (Exception ignored) {
+            }
+        }
         return dto;
     }
 

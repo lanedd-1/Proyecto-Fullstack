@@ -8,6 +8,9 @@ public class EurekaserverApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EurekaserverApplication.class, args);
+		System.out.println("**************************************************");
+		System.out.println("Eureka Server corriendo en: http://localhost:8761");
+		System.out.println("**************************************************");
 	}
 
 }

@@ -1,0 +1,21 @@
+services:
+
+#Servicio 1: levantar MySQL
+  mysql:
+    #Levante una versión especifica del mysql
+    image: mysql:8.4
+
+    #Nombre para este contenedor
+    container_name: mysql-microservicios
+
+    #Variables de entorno que necesita mysql al iniciar
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: db_estado #solo se cera una, las demás se crean en el sql
+    #init-db.sql solo se ejecuta la primera vez
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initb.d/init-db.sql
+    ports:
+      - "3307:3306"
+      

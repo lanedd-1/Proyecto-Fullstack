@@ -49,7 +49,7 @@ public class ProductoController {
             description = "Lista de productos retornada correctamente.",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProductoRequestDTO.class)
+                schema = @Schema(implementation = ProductoResponseDTO.class)
             )
         )
     })
@@ -70,7 +70,7 @@ public class ProductoController {
             description = "Producto encontrado mediante su ID.",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ProductoRequestDTO.class)
+                schema = @Schema(implementation = ProductoResponseDTO.class)
             )
         ),
         @ApiResponse(
@@ -90,7 +90,7 @@ public class ProductoController {
             description="Producto creado correctamente.",
             content=@Content(
                 mediaType= MediaType.APPLICATION_JSON_VALUE,
-                schema=@Schema(implementation= ProductoRequestDTO.class)
+                schema=@Schema(implementation= ProductoResponseDTO.class)
             )
         ),
         @ApiResponse(
@@ -126,7 +126,7 @@ public class ProductoController {
             description="Producto modificado correctamente.",
             content=@Content(
                 mediaType= MediaType.APPLICATION_JSON_VALUE,
-                schema=@Schema(implementation= ProductoRequestDTO.class)
+                schema=@Schema(implementation= ProductoResponseDTO.class)
             )
         ),
         @ApiResponse(
@@ -151,7 +151,7 @@ public class ProductoController {
         description="Producto modificado correctamente.",
         content=@Content(
         mediaType= MediaType.APPLICATION_JSON_VALUE,
-        schema=@Schema(implementation= ProductoRequestDTO.class)
+        schema=@Schema(implementation= ProductoResponseDTO.class)
         )
     ),
         @ApiResponse(

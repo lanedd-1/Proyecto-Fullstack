@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.semestral.productos.dto.CategoriaRequestDTO;
 import com.semestral.productos.dto.CategoriaResponseDTO;
-import com.semestral.productos.dto.ProductoRequestDTO;
+
 import com.semestral.productos.service.CategoriaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +20,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.http.MediaType;
 
 import com.semestral.productos.exception.ResourceNotFoundException;
@@ -28,6 +30,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@Tag(name = "Categorias", description = "operaciones CRUD para la categoria")
 @RequestMapping("/api/categoria")
 @RequiredArgsConstructor
 public class CategoriaController {

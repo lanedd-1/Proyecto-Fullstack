@@ -23,7 +23,7 @@ public class EstadoRequestDTO {
     @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
     @Schema(
         description = "Nombre del Estado",
-        example = "Inactivo",
+        example = "En Camino",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
     private String nombreEstado;

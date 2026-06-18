@@ -1,4 +1,5 @@
-package com.joyeria.gestionestado.controller;
+package com.joyeria.gestionestado.Controller;
+
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.joyeria.gestionestado.Service.EstadoService;
+import com.joyeria.gestionestado.controller.EstadoController;
 import com.joyeria.gestionestado.dto.EstadoRequestDTO;
 import com.joyeria.gestionestado.dto.EstadoResponseDTO;
-
 
 @WebMvcTest(EstadoController.class)
 @DisplayName("Tests del EstadoController con MockMvc")
@@ -58,7 +59,7 @@ public class EstadoControllerTest {
     @Test
     @DisplayName("POST /api/estados debe retornar 201 con datos validos")
     void crearEstado_debeRetornar201_cuandoDatosValidos() throws Exception {
-        EstadoRequestDTO request = new EstadoRequestDTO("Pendiente");
+        EstadoRequestDTO request = new EstadoRequestDTO(null, "Pendiente");
         EstadoResponseDTO response = new EstadoResponseDTO(2L, "Pendiente");
         when(estadoService.saveEstado(any(EstadoRequestDTO.class))).thenReturn(response);
 

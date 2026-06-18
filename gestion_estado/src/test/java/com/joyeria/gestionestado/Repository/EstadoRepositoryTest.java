@@ -17,6 +17,7 @@ import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.joyeria.gestionestado.model.Estado;
+import com.joyeria.gestionestado.repository.EstadoRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")

@@ -1,5 +1,6 @@
 package com.semestral.gestion_direccion.service;
 
+import com.semestral.gestion_direccion.exception.ExternalServiceException;
 import com.semestral.gestion_direccion.client.EstadoClient;
 import com.semestral.gestion_direccion.client.UsuarioClient;
 import com.semestral.gestion_direccion.dto.DireccionRequestDTO;
@@ -64,7 +65,7 @@ public class DireccionService {
                 throw new ResourceNotFoundException(req.getIdUsuario());
             } catch (FeignException e) {
                 log.error("[DireccionService] Error de comunicación con ms-usuarios al validar ID {}: {}", req.getIdUsuario(), e.getMessage());
-                throw new RuntimeException("Error de comunicación con el servicio de Usuarios.");
+                throw new ExternalServiceException("El microservicio de Usuarios no se encuentra disponible en este momento.");
             }
         }
         
@@ -75,8 +76,8 @@ public class DireccionService {
                 log.warn("[DireccionService] Validación fallida: Estado ID {} no existe en ms-estados", req.getIdEstado());
                 throw new ResourceNotFoundException(req.getIdEstado());
             } catch (FeignException e) {
-                log.error("[DireccionService] Error de comunicación con ms-estados al validar ID {}: {}", req.getIdEstado(), e.getMessage());
-                throw new RuntimeException("Error de comunicación con el servicio de Estados.");
+                log.error("[DireccionService] Error al conectar con ms-estados: {}", e.getMessage());
+                throw new ExternalServiceException("El microservicio de Estados no se encuentra disponible en este momento.");
             }
         }
 
@@ -128,8 +129,8 @@ public class DireccionService {
                 log.warn("[DireccionService] Fallo al actualizar: Usuario ID {} no existe en ms-usuarios", req.getIdUsuario());
                 throw new ResourceNotFoundException(req.getIdUsuario());
             } catch (FeignException e) {
-                log.error("[DireccionService] Error de red con ms-usuarios: {}", e.getMessage());
-                throw new RuntimeException("Error de comunicación con el servicio de Usuarios.");
+                log.error("[DireccionService] Error al conectar con ms-usuarios: {}", e.getMessage());
+                throw new ExternalServiceException("El microservicio de Usuarios no se encuentra disponible en este momento.");
             }
             existing.setIdUsuario(req.getIdUsuario());
         }
@@ -142,7 +143,7 @@ public class DireccionService {
                 throw new ResourceNotFoundException(req.getIdEstado());
             } catch (FeignException e) {
                 log.error("[DireccionService] Error de red con ms-estados: {}", e.getMessage());
-                throw new RuntimeException("Error de comunicación con el servicio de Estados.");
+                throw new ExternalServiceException("El microservicio de Estados no se encuentra disponible en este momento.");
             }
             existing.setIdEstado(req.getIdEstado());
         }

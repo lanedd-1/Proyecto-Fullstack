@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.net.URI;
 import java.util.List;
@@ -49,17 +51,14 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.getAllUsuarios());
     }
     @Operation(
-    summary = "Iniciar sesión de usuario",
-    description = "Valida las credenciales de acceso de forma directa utilizando un mapa de parámetros, evitando la creación de DTOs adicionales."
+        summary = "Iniciar sesión de usuario",
+        description = "Valida las credenciales de acceso de forma directa utilizando un mapa de parámetros, evitando la creación de DTOs adicionales."
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
             description = "Autenticación exitosa",
-            content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = UsuarioResponseDTO.class)
-        )
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         ),
         @ApiResponse(
             responseCode = "400",
@@ -73,20 +72,24 @@ public class UsuarioController {
         )
     })
     @PostMapping("/login")
-    public ResponseEntity<UsuarioResponseDTO> login(
-        @Parameter(
+    public ResponseEntity<Map<String, String>> login(
+        @Schema(
             description = "JSON con las llaves 'correo' y 'clave'", 
-            required = true,
-            example = "{\"correo\": \"admin@JoyeriaEter.com\", \"clave\": \"asdf1234!\"}"
+            example = "{\n  \"correo\": \"admin@JoyeriaEter.com\",\n  \"clave\": \"asdf1234!\"\n}"
         )
-        @RequestBody java.util.Map<String, String> req
+        @RequestBody Map<String, String> req
     ) {
-    log.info("[UsuarioController] POST /api/usuarios/login recibido");
-    
-    String correo = req.get("correo");
-    String clave = req.get("clave");
-    UsuarioResponseDTO responseDto = usuarioService.loginDirecto(correo, clave);
-    return ResponseEntity.ok(responseDto);
+        log.info("[UsuarioController] POST /api/usuarios/login recibido");
+        
+        String correo = req.get("correo");
+        String clave = req.get("clave");
+        
+        usuarioService.loginDirecto(correo, clave);
+        
+        Map<String, String> respuesta = new HashMap<>();
+        respuesta.put("mensaje", "Sesión iniciada correctamente");
+        
+        return ResponseEntity.ok(respuesta);
     }
 
     @Operation(

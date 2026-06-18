@@ -4,6 +4,7 @@ import com.semestral.gestion_usuarios.client.EstadoClient;
 import com.semestral.gestion_usuarios.dto.UsuarioRequestDTO;
 import com.semestral.gestion_usuarios.dto.UsuarioResponseDTO;
 import com.semestral.gestion_usuarios.exception.BusinessConflictException;
+import com.semestral.gestion_usuarios.exception.ExternalServiceException;
 import com.semestral.gestion_usuarios.exception.ResourceNotFoundException;
 import com.semestral.gestion_usuarios.model.Rol;
 import com.semestral.gestion_usuarios.model.Usuario;
@@ -90,6 +91,10 @@ public class UsuarioService {
         } catch (feign.FeignException.NotFound e) {
             log.warn("[UsuarioService] Estado ID {} no encontrado en el microservicio externo (ms-estado)", usuario.getIdEstado());
             throw new ResourceNotFoundException(usuario.getIdEstado());
+        } catch (feign.FeignException e) {
+            // AQUÍ LANZAMOS LA NUEVA EXCEPCIÓN 503
+            log.error("[UsuarioService] Error al conectar con ms-estados: {}", e.getMessage());
+            throw new ExternalServiceException("El microservicio de Estados no se encuentra disponible en este momento.");
         }
 
         if (usuarioRep.findByCorreoU(usuario.getCorreoU()).isPresent()) {
@@ -111,6 +116,7 @@ public class UsuarioService {
         
         return convertToDto(guardado);
     }
+    
     @Transactional(readOnly = true)
     public UsuarioResponseDTO loginDirecto(String correo, String clave) {
         log.info("[UsuarioService] Intentando iniciar sesión para el correo: {}", correo);
@@ -175,6 +181,10 @@ public class UsuarioService {
             } catch (feign.FeignException.NotFound e) {
                 log.warn("[UsuarioService] Fallo al actualizar estado: Estado ID {} no existe en ms-estado", usuario.getIdEstado());
                 throw new ResourceNotFoundException(usuario.getIdEstado());
+            } catch (feign.FeignException e) {
+                // AQUÍ LANZAMOS LA NUEVA EXCEPCIÓN 503
+                log.error("[UsuarioService] Error al conectar con ms-estados: {}", e.getMessage());
+                throw new ExternalServiceException("El microservicio de Estados no se encuentra disponible en este momento.");
             }
             existing.setIdEstado(usuario.getIdEstado());
         }

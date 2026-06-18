@@ -70,7 +70,19 @@ public ResponseEntity<ErrorResponseDTO> handleTypeMismatch(MethodArgumentTypeMis
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(buildError(HttpStatus.BAD_REQUEST, msg, request.getRequestURI(), null));
 }
-
+@ExceptionHandler(ExternalServiceException.class)
+    public ResponseEntity<ErrorResponseDTO> handleExternalService(ExternalServiceException ex, HttpServletRequest req) {
+        logger.warn("ExternalService error: {} - {}", req.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ErrorResponseDTO(
+                        LocalDateTime.now(), 
+                        HttpStatus.SERVICE_UNAVAILABLE.value(),
+                        HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(), 
+                        ex.getMessage(), 
+                        req.getRequestURI(), 
+                        null
+                ));
+    }
 @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 public ResponseEntity<ErrorResponseDTO> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
     String msg = String.format("Metodo HTTP '%s' no permitido. Metodos validos: %s", ex.getMethod(), ex.getSupportedHttpMethods());

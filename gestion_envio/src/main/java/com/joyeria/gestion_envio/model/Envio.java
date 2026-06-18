@@ -1,39 +1,37 @@
 package com.joyeria.gestion_envio.model;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "envio")
+@Schema(description = "Entidad que representa el proceso de envío de una venta realizada")
 public class Envio {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador único del envío", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long idEnvio;
 
-    @Column(nullable = false)
+    @Schema(description = "Fecha en la que se realizó el envío", example = "2026-06-17T10:00:00")
     private LocalDateTime fechaEnvio;
 
-    @Column(nullable = false)
+    @Schema(description = "Fecha estimada o real de recepción del envío", example = "2026-06-20T14:00:00")
     private LocalDateTime fechaRecep;
 
-    @Column(name = "idVenta", nullable = false)
+    @Schema(description = "ID de la venta asociada al envío", example = "50")
     private Long idVenta;
 
-    @Column(name = "idDireccion", nullable = false)
+    @Schema(description = "ID de la dirección de destino", example = "10")
     private Long idDireccion;
 
-    @Column(name = "estado", nullable = false)
+    @Schema(description = "Estado actual del envío", example = "EN_TRANSITO")
     private String estado;
 }

@@ -17,20 +17,17 @@ spring:
               uri: lb://gestion_usuarios
               predicates:
                 - Path=/api/usuarios,/api/usuarios/**
-            - id: ruta-gestion_usuarios
-              uri: lb://gestion_usuarios
+            - id: ruta-gestion_direccion
+              uri: lb://gestion_direccion
               predicates:
-                - Path=/api/usuarios,/api/usuarios/**
-            - id: ruta-gestion_
-              uri: lb://gestion_
-              predicates:
-                - Path=/api/ ,/api/ /**
+                - Path=/api/direccion,/api/direccion/**
+
 eureka:
   client: 
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
     hostname: api-gateway

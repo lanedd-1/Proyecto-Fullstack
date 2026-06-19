@@ -1,3 +1,41 @@
+server:
+  port: 8071
+
 spring:
   application:
     name: apigateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: ruta-gestion_estados
+              uri: lb://gestion_estados
+              predicates:
+              - Path=/api/estados,/api/estados/**
+            - id: ruta-gestion_usuarios
+              uri: lb://gestion_usuarios
+              predicates:
+                - Path=/api/usuarios,/api/usuarios/**
+            - id: ruta-gestion_usuarios
+              uri: lb://gestion_usuarios
+              predicates:
+                - Path=/api/usuarios,/api/usuarios/**
+            - id: ruta-gestion_
+              uri: lb://gestion_
+              predicates:
+                - Path=/api/ ,/api/ /**
+eureka:
+  client: 
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: api-gateway
+    instance-id: api-gateway:${server.port}
+
+logging:
+  level:
+    '[org.springframework.cloud.gateway]': DEBUG

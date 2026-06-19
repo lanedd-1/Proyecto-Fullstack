@@ -29,22 +29,18 @@ import com.semestral.gestion_usuarios.service.UsuarioService;
 @WebMvcTest(UsuarioController.class)
 @DisplayName("Tests del UsuarioController con MockMvc")
 public class UsuarioControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
     private UsuarioService usuarioService;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("GET api/usuarios debe retornar un JSON con la lista de usuarios y el codigo 200")
     void listar_debeRetornar200ConListaDeUsuarios() throws Exception {
-        // simular usuarios
         UsuarioResponseDTO dto = new UsuarioResponseDTO(1L, "Juan Perez", "11111111-1", "juan@mail.com", 1L, "ADMIN", 1L);
         
         when(usuarioService.getAllUsuarios()).thenReturn(List.of(dto));
-        
         mockMvc.perform(get("/api/usuarios")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -61,20 +57,19 @@ public class UsuarioControllerTest {
         UsuarioResponseDTO response = new UsuarioResponseDTO(1L, "Juan Perez", "11111111-1", "juan@mail.com", 1L, "ADMIN", 1L);
         
         when(usuarioService.saveUsuario(any(UsuarioRequestDTO.class))).thenReturn(response);
-
         mockMvc.perform(post("/api/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated()) // HTTP 201
-                .andExpect(jsonPath("$.idUsuario").value(1))
+                .andExpect(jsonPath("$.idU").value(1))
                 .andExpect(jsonPath("$.nombreU").value("Juan Perez"))
                 .andExpect(jsonPath("$.correoU").value("juan@mail.com"));
     }
     @Test
     @DisplayName("PUT api/usuarios/{id} debe retornar 200 al actualizar correctamente")
     void actualizar_debeRetornar200_cuandoDatosValidos() throws Exception {
-        UsuarioRequestDTO request = new UsuarioRequestDTO("Juan Actualizado", "11111111-1", "juan_nuevo@mail.com", "", 1L, 1L);
+        UsuarioRequestDTO request = new UsuarioRequestDTO("Juan Actualizado", "11111111-1", "juan_nuevo@mail.com", "nuevaClave123", 1L, 1L);
         UsuarioResponseDTO response = new UsuarioResponseDTO(1L, "Juan Actualizado", "11111111-1", "juan_nuevo@mail.com", 1L, "ADMIN", 1L);
         
         when(usuarioService.update(eq(1L), any(UsuarioRequestDTO.class))).thenReturn(response);

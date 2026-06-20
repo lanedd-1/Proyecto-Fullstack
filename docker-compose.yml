@@ -102,11 +102,11 @@ services:
       - microservicios-net
  
   #Servicio 7: inventario
-  inventariosemestral:
+  inventario:
     build:
-      context: ./inventariosemestral
+      context: ./inventario
       dockerfile: Dockerfile
-    container_name: inventariosemestral
+    container_name: inventario
     ports:
       - "8090:8090"
     depends_on:
@@ -188,7 +188,7 @@ services:
         condition: service_started
       gestion_direccion:
         condition: service_started
-      inventariosemestral:
+      inventario:
         condition: service_started
       productos-microservicio-main:
         condition: service_started

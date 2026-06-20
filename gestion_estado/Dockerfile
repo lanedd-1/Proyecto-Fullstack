@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 #Documente el puerto de salida pero sin abrirlo directamente
-EXPOSE 8071
+EXPOSE 8072
 
 #Cual es la imagen empaquetada para arrancar la aplicacion spring boot
 ENTRYPOINT [ "java", "-jar", "app.jar" ]

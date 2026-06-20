@@ -22,10 +22,18 @@ import lombok.NoArgsConstructor;
 @Table(name = "categoria")
 public class Categoria {
 
+    @Schema(
+        description = "ID de la categoria",
+        example = "1"
+    )
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCat;
 
+    @Schema(
+        description = "Nombre de la categoria",
+        example = "Collares"
+    )
     @Column(name = "nombre_categoria", length = 500, nullable = false)
     private String nombreCat;
 

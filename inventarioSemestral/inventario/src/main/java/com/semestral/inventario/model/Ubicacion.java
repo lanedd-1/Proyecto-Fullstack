@@ -1,6 +1,7 @@
 package com.semestral.inventario.model;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,15 +20,26 @@ import lombok.NoArgsConstructor;
 @Table(name = "ubicacion")
 public class Ubicacion {
 
-
+    @Schema(
+        description = "ID de la ubicación",
+        example = "1"
+    )
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPasEst;
 
+    @Schema(
+        description = "ID del pasillo",
+        example = "1"
+    )
     @ManyToOne
     @JoinColumn(name = "PasilloId", nullable = false)
     private Pasillo idPasillo;
 
+    @Schema(
+        description = "ID del estante",
+        example = "1"
+    )
     @ManyToOne
     @JoinColumn(name = "EstanteId", nullable = false)
     private Estante idEstante;

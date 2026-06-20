@@ -100,6 +100,7 @@ public class CategoriaController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })
+
     @GetMapping("/{id}")
     public ResponseEntity<CategoriaResponseDTO> encontrarPorId(@PathVariable Long id){
         return catServ.buscarPorId(id)
@@ -112,5 +113,6 @@ public class CategoriaController {
             @Valid @RequestBody CategoriaRequestDTO cat) {
         return ResponseEntity.ok(catServ.updateCat(id, cat));
     }
+
 
 }

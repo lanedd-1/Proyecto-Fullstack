@@ -102,4 +102,21 @@ class CategoriaServiceTest {
 
         verify(categoriaRepository, times(1)).findById(1L);
     }
+
+    @Test
+    @DisplayName("updateCat() actualiza el nombre de una categoría existente")
+    void updateCat_debeActualizarNombreCuandoExiste() {
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoriaEjemplo));
+        when(categoriaRepository.save(any(Categoria.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        CategoriaRequestDTO request = new CategoriaRequestDTO("Aros");
+        Optional<CategoriaResponseDTO> resultado = categoriaService.updateCat(1L, request);
+
+        assertTrue(resultado.isPresent());
+        assertEquals(1L, resultado.get().getIdCat());
+        assertEquals("Aros", resultado.get().getNombreCat());
+
+        verify(categoriaRepository, times(1)).findById(1L);
+        verify(categoriaRepository, times(1)).save(any(Categoria.class));
+    }
 }

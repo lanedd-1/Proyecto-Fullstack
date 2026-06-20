@@ -1,6 +1,9 @@
 package com.semestral.productos.controller;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,10 +101,16 @@ public class CategoriaController {
         )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaResponseDTO> encontrarPorId(@PathVariable Long idCat){
-        return catServ.buscarPorId(idCat)
+    public ResponseEntity<CategoriaResponseDTO> encontrarPorId(@PathVariable Long id){
+        return catServ.buscarPorId(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException(idCat));
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Optional<CategoriaResponseDTO>> actualizarCategoria(@PathVariable Long id,
+            @Valid @RequestBody CategoriaRequestDTO cat) {
+        return ResponseEntity.ok(catServ.updateCat(id, cat));
     }
 
 }

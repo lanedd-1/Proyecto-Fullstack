@@ -42,10 +42,20 @@ public class CategoriaService {
         return catRepo.findById(idCat).map(this::convertToDTO);
     }
 
-       private CategoriaResponseDTO convertToDTO(Categoria c) {
-        return new CategoriaResponseDTO(
-            c.getIdCat(),
-            c.getNombreCat()
+    private CategoriaResponseDTO convertToDTO(Categoria c) {
+    return new CategoriaResponseDTO(
+        c.getIdCat(),
+        c.getNombreCat()
         );
     }
+
+
+    public Optional<CategoriaResponseDTO> updateCat(Long idCat, CategoriaRequestDTO r) {
+    return catRepo.findById(idCat).map(cat -> {
+        cat.setNombreCat(r.getNombreCat());
+        return convertToDTO(catRepo.save(cat));
+    }   );
+
+    }
+
 }

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,4 +67,21 @@ class CategoriaControllerTest {
             .andExpect(jsonPath("$.idCat").value(1))
             .andExpect(jsonPath("$.nombreCat").value("Collares"));
     }
+    @Test
+    @DisplayName("PUT /api/categoria/{id} debe retornar 200 con categoria actualizada")
+    void actualizar_debeRetornar200ConCategoriaActualizada() throws Exception {
+        CategoriaRequestDTO request = new CategoriaRequestDTO("Aros");
+        CategoriaResponseDTO response = new CategoriaResponseDTO(1L, "Aros");
+
+        when(categoriaService.updateCat(any(Long.class), any(CategoriaRequestDTO.class))).thenReturn(Optional.of(response));
+
+        mockMvc.perform(put("/api/categoria/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.idCat").value(1))
+            .andExpect(jsonPath("$.nombreCat").value("Aros"));
+    }
 }
+

@@ -156,7 +156,7 @@ services:
       dockerfile: Dockerfile
     container_name: api-gateway
     ports:
-      - "8081:8081"
+      - "8071:8071"
     depends_on:
       eureka-server:
         condition: service_started #espera hasta que eureka este levantado

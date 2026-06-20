@@ -17,7 +17,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("ms_inventarioSemestral API")
                         .version("1.0.0")
-                        .description("API REST para gestión del catálogo de productos")
+                        .description("API REST para gestión del inventario")
                         .contact(new Contact()
                                 .name("DSY1103-005D")
                                 .email("ejemplo@gmail.com")))

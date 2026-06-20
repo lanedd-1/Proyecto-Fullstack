@@ -57,9 +57,9 @@ services:
     #Servicio 4: usuarios
   gestion_usuarios:
     build:
-      context: ./gestion_usuarios
+      context: ./gestion-usuarios
       dockerfile: Dockerfile
-    container_name: gestion_usuarios
+    container_name: gestion-usuarios
     ports:
       - "8080:8080"
     depends_on:
@@ -160,9 +160,21 @@ services:
     depends_on:
       eureka-server:
         condition: service_started #espera hasta que eureka este levantado
-      ms-productos:
+      gestionestado:
         condition: service_started #espera hasta que eureka este levantado
-      ms-clientes:
+      gestion_configuracion:
+        condition: service_started #espera hasta que eureka este levantado
+      gestion-usuarios:
+        condition: service_started #espera hasta que eureka este levantado
+      gestion_direccion:
+        condition: service_started #espera hasta que eureka este levantado
+      inventario:
+        condition: service_started #espera hasta que eureka este levantado
+      productos:
+        condition: service_started #espera hasta que eureka este levantado
+      gestion-envio:
+        condition: service_started #espera hasta que eureka este levantado
+      ventas:
         condition: service_started #espera hasta que eureka este levantado
     restart: on-failure
     networks:

@@ -37,6 +37,10 @@ spring:
               uri: lb://ventas
               predicates:
                 - Path=/api/ventas,/api/ventas/**
+            - id: ruta-productos
+              uri: lb://productos
+              predicates:
+                - Path=/api/productos,/api/productos/**
 
 eureka:
   client: 

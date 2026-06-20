@@ -21,6 +21,18 @@ spring:
               uri: lb://gestion_direccion
               predicates:
                 - Path=/api/direccion,/api/direccion/**
+            - id: ruta-gestion_envio
+              uri: lb://gestion_envio
+              predicates:
+                - Path=/api/envio,/api/envio/**
+            - id: ruta-gestion_configuracion
+              uri: lb://gestion_configuracion
+              predicates:
+                - Path=/api/configuracion,/api/configuracion/**
+            - id: ruta-inventario
+              uri: lb://inventario
+              predicates:
+                - Path=/api/inventario,/api/inventario/**
 
 eureka:
   client: 

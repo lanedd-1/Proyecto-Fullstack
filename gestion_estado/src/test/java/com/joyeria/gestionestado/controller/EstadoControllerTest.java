@@ -1,4 +1,4 @@
-package com.joyeria.gestionestado.Controller;
+package com.joyeria.gestionestado.controller;
 
 
 import java.util.List;

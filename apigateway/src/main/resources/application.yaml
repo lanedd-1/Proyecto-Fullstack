@@ -9,16 +9,16 @@ spring:
       server:
         webflux:
           routes:
-            - id: ruta-gestion_estados
-              uri: lb://gestion_estados
+            - id: ruta-gestionestados
+              uri: lb://gestionestados
               predicates:
               - Path=/api/estados,/api/estados/**
             - id: ruta-gestion_configuracion
               uri: lb://gestion_configuracion
               predicates:
                 - Path=/api/configuracion,/api/configuracion/**
-            - id: ruta-gestion_usuarios
-              uri: lb://gestion_usuarios
+            - id: ruta-gestion-usuarios
+              uri: lb://gestion-usuarios
               predicates:
                 - Path=/api/usuarios,/api/usuarios/**
             - id: ruta-gestion_direccion

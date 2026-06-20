@@ -1,4 +1,4 @@
-package com.joyeria.gestionestado.Service;
+package com.joyeria.gestionestado.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.joyeria.gestionestado.Service.EstadoService;
 import com.joyeria.gestionestado.client.EnvioClient;
 import com.joyeria.gestionestado.dto.EnvioResponseDTO;
 import com.joyeria.gestionestado.dto.EstadoConEnviosResponseDTO;

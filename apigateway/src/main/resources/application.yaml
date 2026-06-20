@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: apigateway
+    name: api-gateway
   cloud:
     gateway:
       server:
@@ -13,6 +13,10 @@ spring:
               uri: lb://gestion_estados
               predicates:
               - Path=/api/estados,/api/estados/**
+            - id: ruta-gestion_configuracion
+              uri: lb://gestion_configuracion
+              predicates:
+                - Path=/api/configuracion,/api/configuracion/**
             - id: ruta-gestion_usuarios
               uri: lb://gestion_usuarios
               predicates:
@@ -21,33 +25,29 @@ spring:
               uri: lb://gestion_direccion
               predicates:
                 - Path=/api/direccion,/api/direccion/**
-            - id: ruta-gestion_envio
-              uri: lb://gestion_envio
-              predicates:
-                - Path=/api/envio,/api/envio/**
-            - id: ruta-gestion_configuracion
-              uri: lb://gestion_configuracion
-              predicates:
-                - Path=/api/configuracion,/api/configuracion/**
             - id: ruta-inventario
               uri: lb://inventario
               predicates:
                 - Path=/api/inventario,/api/inventario/**
-            - id: ruta-ventas
-              uri: lb://ventas
-              predicates:
-                - Path=/api/ventas,/api/ventas/**
             - id: ruta-productos
               uri: lb://productos
               predicates:
                 - Path=/api/productos,/api/productos/**
+            - id: ruta-gestion_envio
+              uri: lb://gestion_envio
+              predicates:
+                - Path=/api/envio,/api/envio/**
+            - id: ruta-ventas
+              uri: lb://ventas
+              predicates:
+                - Path=/api/ventas,/api/ventas/**
 
 eureka:
   client: 
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
   instance:
     prefer-ip-address: true
     hostname: api-gateway

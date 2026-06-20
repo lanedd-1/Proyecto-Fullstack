@@ -48,7 +48,9 @@ services:
         condition: service_started
     restart: on-failure
     networks:
-      - microservicios-net
+      microservicios-net:
+        aliases:
+          - gestion-estado
  
   #Servicio 4: configuracion
   gestion_configuracion:
@@ -65,7 +67,9 @@ services:
         condition: service_started
     restart: on-failure
     networks:
-      - microservicios-net
+      microservicios-net:
+        aliases:
+          - gestion-configuracion
  
   #Servicio 5: usuarios
   gestion_usuarios:
@@ -82,7 +86,9 @@ services:
         condition: service_started
     restart: on-failure
     networks:
-      - microservicios-net
+      microservicios-net:
+        aliases:
+          - gestion-usuarios
  
   #Servicio 6: direccion
   gestion_direccion:
@@ -99,7 +105,9 @@ services:
         condition: service_started
     restart: on-failure
     networks:
-      - microservicios-net
+      microservicios-net:
+        aliases:
+          - gestion-direccion
  
   #Servicio 7: inventario
   inventario:
@@ -150,7 +158,9 @@ services:
         condition: service_started
     restart: on-failure
     networks:
-      - microservicios-net
+      microservicios-net:
+        aliases:
+          - gestion-envio
  
   #Servicio 10: ventas
   venta:

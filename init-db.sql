@@ -1,11 +1,11 @@
 
--- MS_CONFIGURACION
-CREATE DATABASE IF NOT EXISTS db_configuracion
+-- MS_USUARIOS
+CREATE DATABASE IF NOT EXISTS db_usuarios
  CHARACTER SET utf8mb4
  COLLATE utf8mb4_unicode_ci;
 
--- MS_USUARIOS
-CREATE DATABASE IF NOT EXISTS db_usuarios
+-- MS_CONFIGURACION
+CREATE DATABASE IF NOT EXISTS db_configuracion
  CHARACTER SET utf8mb4
  COLLATE utf8mb4_unicode_ci;
 
@@ -35,8 +35,8 @@ CREATE DATABASE IF NOT EXISTS db_ventas
  COLLATE utf8mb4_unicode_ci;
 
  -- Otorgar todos los permisos al usuario root
-GRANT ALL PRIVILEGES ON db_configuracion.* TO 'root'@'%';
 GRANT ALL PRIVILEGES ON db_usuarios.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON db_configuracion.* TO 'root'@'%';
 GRANT ALL PRIVILEGES ON db_direccion.* TO 'root'@'%';
 GRANT ALL PRIVILEGES ON db_inventario.* TO 'root'@'%';
 GRANT ALL PRIVILEGES ON db_productos.* TO 'root'@'%';

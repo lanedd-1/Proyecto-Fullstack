@@ -72,7 +72,7 @@ public class ConfiguracionServiceTest {
         assertNotNull(resultado);
         assertEquals(8, resultado.getLongitudMinima());
         assertEquals(1, resultado.getUsuarios().size());
-        assertEquals("Ana", resultado.getUsuarios().get(0).getNombreUser());
+        assertEquals("Ana", resultado.getUsuarios().get(0).getNombreU());
     }
 
     @Test

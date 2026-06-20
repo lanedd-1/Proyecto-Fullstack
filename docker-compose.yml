@@ -18,4 +18,163 @@ services:
       - ./init-db.sql:/docker-entrypoint-initb.d/init-db.sql
     ports:
       - "3307:3306"
+      #Verificar que mysql este realmente listo antes de ejecutar lo demas
+    healthcheck:
+      test: ["CMD","mysqladmin","ping","-h","localhost","-u","root", "-prootpass"]
+      interval: 10s #revisa cada 10 segundos
+      timeout: 5s #timeout por cada intento
+      retries: 5 #intentos antes de marcar como error
+      start_period: 30s #tiempo antes del primer intento
+    networks:
+      - microservicios-net
+    #Servicio 2: Eureka
+  eureka-server:
+    build:
+      context: ./eurekaserver
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    restart: on-failure
+    networks:
+      - microservicios-net
+     #Servicio 3: configuracion
+  gestion_configuracion:
+    build:
+      context: ./gestion_configuracion
+      dockerfile: Dockerfile
+    container_name: gestion_configuracion
+    ports:
+      - "8073:8073"
+    depends_on:
+      mysql:
+        condition: service_healthy #espera que mysql este OK
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+    #Servicio 4: usuarios
+  gestion_usuarios:
+    build:
+      context: ./gestion_usuarios
+      dockerfile: Dockerfile
+    container_name: gestion_usuarios
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy #espera que mysql este OK
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+    #Servicio 4: usuarios
+  gestion_direccion:
+    build:
+      context: ./gestion_direccion
+      dockerfile: Dockerfile
+    container_name: gestion_direccion
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy #espera que mysql este OK
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+    #Servicio 4: inventario
+  inventario:
+    build:
+      context: ./inventario
+      dockerfile: Dockerfile
+    container_name: inventario
+    ports:
+      - "8090:8090"
+    depends_on:
+      mysql:
+        condition: service_healthy #espera que mysql este OK
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+     #Servicio 4: productos
+  productos:
+    build:
+      context: ./productos
+      dockerfile: Dockerfile
+    container_name: productos
+    ports:
+      - "8091:8091"
+    depends_on:
+      mysql:
+        condition: service_healthy #espera que mysql este OK
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+    #Servicio 4: envios
+  gestion-envio:
+    build:
+      context: ./gestion-envio
+      dockerfile: Dockerfile
+    container_name: gestion-envio
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql:
+        condition: service_healthy #espera que mysql este OK
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+      # coso ventas
+  ventas:
+    build:
+      context: ./ventas
+      dockerfile: Dockerfile
+    container_name: ventas
+    ports:
+      - "8092:8092"
+    depends_on:
+      mysql:
+        condition: service_healthy #espera que mysql este OK
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+  api-gateway:
+    build:
+      context: ./apigateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8081:8081"
+    depends_on:
+      eureka-server:
+        condition: service_started #espera hasta que eureka este levantado
+      ms-productos:
+        condition: service_started #espera hasta que eureka este levantado
+      ms-clientes:
+        condition: service_started #espera hasta que eureka este levantado
+    restart: on-failure
+    networks:
+      - microservicios-net
+
+#almacenamiento persistente
+volumes:
+  mysql-data:
+
+#crear la red virtual interna
+networks:
+  microservicios-net:
+    driver: bridge
+    
       

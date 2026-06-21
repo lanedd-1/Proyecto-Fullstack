@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI(), null));
     }
-    
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+        logger.warn("Ruta o recurso no encontrado - Path: {} | Mensaje: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(buildError(HttpStatus.NOT_FOUND, "La ruta o recurso solicitado no existe", request.getRequestURI(), null));
+    }
     @ExceptionHandler(ExternalServiceException.class)
     public ResponseEntity<ErrorResponseDTO> handleExternalService(ExternalServiceException ex, HttpServletRequest request) {
         logger.warn("Servicio externo no disponible - Path: {} | Mensaje: {}", request.getRequestURI(), ex.getMessage());

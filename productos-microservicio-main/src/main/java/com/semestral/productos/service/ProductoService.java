@@ -77,9 +77,6 @@ public class ProductoService {
                 .collect(Collectors.toList());
     }
 
-    public void eliminarProd (Long id){
-          productoRepository.deleteById(id);
-    }
 
     public ProductoResponseDTO updatePrecio(Long id, BigDecimal precio) {
         Productos prod = productoRepository.findById(id)

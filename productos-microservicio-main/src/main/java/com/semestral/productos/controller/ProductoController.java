@@ -84,6 +84,10 @@ public class ProductoController {
         return prodService.encontrarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(
+        summary = "Crea un producto mediante su ID",
+        description = "Crea el producto mediante los datos que se señalan"
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode="201",
@@ -106,14 +110,6 @@ public class ProductoController {
     }
 
 
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable Long id){
-        if (prodService.encontrarPorId(id).isEmpty()) {
-            throw new ResourceNotFoundException(id);
-        }
-        prodService.eliminarProd(id);
-        return ResponseEntity.ok("Producto eliminado correctamente.");
-    }
 
     @Operation(
         summary = "Actualizar un precio de un producto existente.",

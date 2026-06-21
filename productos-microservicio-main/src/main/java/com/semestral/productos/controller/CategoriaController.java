@@ -86,6 +86,10 @@ public class CategoriaController {
         return ResponseEntity.status(201).body(catServ.saveCat(cat));
         
     }
+    @Operation(
+        summary = "Buscar categoria por ID",
+        description = "Buisca una categoria mediante el ID ingresado"
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
@@ -109,6 +113,26 @@ public class CategoriaController {
                 .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+
+        @Operation(
+        summary = "Actualiza el nombre de la categoria por ID",
+        description = "Actualia el nombre de la categoria por el ID ingresado"
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Categoria encontrada mediante su ID",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = CategoriaRequestDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Categoria no encontrada en la BD porfavor verificar el ID ingresado",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Optional<CategoriaResponseDTO>> actualizarCategoria(@PathVariable Long id,
             @Valid @RequestBody CategoriaRequestDTO cat) {

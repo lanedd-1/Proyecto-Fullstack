@@ -36,7 +36,7 @@ class EstanteRepositoryTest {
 
     @Test
     @DisplayName("Consultar estantes guardados")
-    void whenFindAll_thenReturnAllShelves() {
+    void whenFindAll_thenReturnAllEstantes() {
         var estantes = estanteRepository.findAll();
 
         assertNotNull(estantes);
@@ -51,5 +51,6 @@ class EstanteRepositoryTest {
         assertTrue(optional.isPresent());
         assertEquals("Estante A", optional.get().getNombreEstante());
     }
+    
 }
 

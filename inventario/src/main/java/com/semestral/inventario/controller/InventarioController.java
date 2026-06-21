@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.semestral.inventario.dto.EstanteRequestDTO;
+import com.semestral.inventario.dto.DescontarProductoRequestDTO;
 import com.semestral.inventario.dto.InventarioRequestDTO;
 import com.semestral.inventario.dto.InventarioResponseDTO;
 import com.semestral.inventario.dto.PasilloRequestDTO;
@@ -131,6 +132,33 @@ public class InventarioController {
     @PutMapping("/descontar")
     public ResponseEntity<InventarioResponseDTO> descontarStock(@RequestBody InventarioRequestDTO request) {
         return ResponseEntity.ok(invService.descontarStock(request));
+    }
+
+    @Operation(
+        summary = "Descontar stock por producto",
+        description = "Reduce el stock de cualquier ubicación que tenga suficientes unidades de un producto específico. Si no hay suficiente stock disponible se devuelve un error."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Stock descontado correctamente.",
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = InventarioResponseDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Stock insuficiente para completar la operación"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Producto no encontrado"
+        )
+    })
+    @PutMapping("/descontar/producto")
+    public ResponseEntity<InventarioResponseDTO> descontarStockPorProducto(@RequestBody DescontarProductoRequestDTO request) {
+        return ResponseEntity.ok(invService.descontarStockPorProducto(request));
     }
 
     @Operation(

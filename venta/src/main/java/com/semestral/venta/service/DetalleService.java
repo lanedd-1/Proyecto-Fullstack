@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.semestral.venta.client.InventarioClient;
 import com.semestral.venta.client.ProductoClient;
 import com.semestral.venta.exception.ExternalServiceException;
 import com.semestral.venta.exception.ResourceNotFoundException;
@@ -28,6 +29,7 @@ public class DetalleService {
     private final DetalleRepository detalleRe;
     private final VentaRepository ventaRe;
     private final ProductoClient productoClient;
+    private final InventarioClient inventarioClient;
 
     public List<DetalleResponseDTO> obtenerTodos() {
         return detalleRe.findAll().stream()
@@ -69,6 +71,7 @@ public class DetalleService {
         }
 
         Double precioProducto = extraerPrecioProducto(producto);
+        descontarStockPorProducto(dto.getProductoId(), dto.getCantidad());
         Double subTotalCalculado = dto.getCantidad() * precioProducto;
 
     
@@ -241,6 +244,26 @@ public class DetalleService {
             return Double.parseDouble(value.toString());
         } catch (NumberFormatException e) {
             return null;
+        }
+    }
+
+    private void descontarStockPorProducto(Long productoId, Integer cantidad) {
+        if (productoId == null || cantidad == null || cantidad <= 0) {
+            throw new IllegalArgumentException("Para descontar stock se requieren idProd y cantidad mayor a 0");
+        }
+
+        Map<String, Object> request = new java.util.HashMap<>();
+        request.put("idProd", productoId);
+        request.put("cantidad", cantidad);
+
+        try {
+            inventarioClient.descontarStockPorProducto(request);
+        } catch (FeignException.BadRequest e) {
+            throw new IllegalArgumentException("No hay suficientes existencias en inventario para el producto con ID: " + productoId);
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException(productoId);
+        } catch (FeignException e) {
+            throw new ExternalServiceException("El microservicio de Inventario no se encuentra disponible en este momento.");
         }
     }
 }

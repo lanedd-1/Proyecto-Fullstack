@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.semestral.inventario.client.ProductosClient;
 import com.semestral.inventario.dto.EstanteRequestDTO;
+import com.semestral.inventario.dto.DescontarProductoRequestDTO;
 import com.semestral.inventario.dto.InventarioRequestDTO;
 import com.semestral.inventario.dto.InventarioResponseDTO;
 import com.semestral.inventario.dto.PasilloRequestDTO;
@@ -121,6 +122,17 @@ public class InventarioService {
         return convertToDTO(actualizado);
 }
 
+    public InventarioResponseDTO descontarStockPorProducto(DescontarProductoRequestDTO request) {
+        validarProd(request.getIdProd());
+        Inventario registro = inventarioRe.findByIdProd(request.getIdProd()).stream()
+            .filter(stock -> stock.getStock() != null && stock.getStock() >= request.getCantidad())
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("No hay suficientes existencias en inventario para el producto ID: " + request.getIdProd()));
+
+        registro.setStock(registro.getStock() - request.getCantidad());
+        Inventario actualizado = inventarioRe.save(registro);
+        return convertToDTO(actualizado);
+}
 
 public List<InventarioResponseDTO> getStockPorProducto (Long idPps){
 

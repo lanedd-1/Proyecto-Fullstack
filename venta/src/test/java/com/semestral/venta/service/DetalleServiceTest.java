@@ -46,6 +46,9 @@ public class DetalleServiceTest {
     @Mock
     private ProductoClient productoClient;
 
+    @Mock
+    private com.semestral.venta.client.InventarioClient inventarioClient;
+
     @InjectMocks
     private DetalleService detalleService;
 
@@ -68,6 +71,7 @@ public class DetalleServiceTest {
         when(productoClient.obtenerPorId(3L)).thenReturn(producto);
 
         when(detalleRe.findByIdVenta_IdVentaAndProductoId(eq(1L), eq(3L))).thenReturn(Optional.empty());
+        when(inventarioClient.descontarStockPorProducto(any())).thenReturn(new HashMap<>());
 
         Detalle saved = new Detalle();
         saved.setIdDetalle(5L);
@@ -82,6 +86,7 @@ public class DetalleServiceTest {
         DetalleResponseDTO res = detalleService.crearDetalle(dto);
 
         assertEquals(5L, res.getIdDetalle());
+        verify(inventarioClient, times(1)).descontarStockPorProducto(any());
         verify(ventaRe, times(1)).save(any(Venta.class));
     }
 

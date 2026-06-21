@@ -23,8 +23,6 @@ public class DataInitializer {
 	CommandLineRunner initDatabase(VentaRepository ventaRepo, DetalleRepository detalleRepo) {
 		return args -> {
 
-			detalleRepo.deleteAll();
-			ventaRepo.deleteAll();
 
 			Venta v1 = new Venta();
 			v1.setFechaV(LocalDateTime.now().minusDays(2));

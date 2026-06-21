@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.semestral.venta.client.ProductoClient;
+import com.semestral.venta.exception.ExternalServiceException;
 import com.semestral.venta.exception.ResourceNotFoundException;
 import com.semestral.venta.dto.DetalleRequestDTO;
 import com.semestral.venta.dto.DetalleResponseDTO;
@@ -17,6 +18,7 @@ import com.semestral.venta.model.Venta;
 import com.semestral.venta.repository.DetalleRepository;
 import com.semestral.venta.repository.VentaRepository;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -53,7 +55,15 @@ public class DetalleService {
         Venta venta = ventaRe.findById(dto.getVentaId())
             .orElseThrow(() -> new ResourceNotFoundException(dto.getVentaId()));
 
-        Map<String, Object> producto = productoClient.obtenerPorId(dto.getProductoId());
+        Map<String, Object> producto;
+        try {
+            producto = productoClient.obtenerPorId(dto.getProductoId());
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException(dto.getProductoId());
+        } catch (FeignException e) {
+            throw new ExternalServiceException("El microservicio de Productos no se encuentra disponible en este momento.");
+        }
+
         if (producto == null || producto.get("idProd") == null) {
             throw new ResourceNotFoundException(dto.getProductoId());
         }
@@ -112,7 +122,15 @@ public class DetalleService {
             throw new IllegalArgumentException("El productoId es obligatorio");
         }
 
-        Map<String, Object> producto = productoClient.obtenerPorId(productoId);
+        Map<String, Object> producto;
+        try {
+            producto = productoClient.obtenerPorId(productoId);
+        } catch (FeignException.NotFound e) {
+            throw new ResourceNotFoundException(productoId);
+        } catch (FeignException e) {
+            throw new ExternalServiceException("El microservicio de Productos no se encuentra disponible en este momento.");
+        }
+
         if (producto == null || producto.get("idProd") == null) {
             throw new ResourceNotFoundException(productoId);
         }
@@ -174,7 +192,6 @@ public class DetalleService {
                 Map<String, Object> producto = productoClient.obtenerPorId(d.getProductoId());
                 dto.setProductoNombre(getNombreProducto(producto));
             } catch (Exception e) {
-                
             }
         }
         return dto;

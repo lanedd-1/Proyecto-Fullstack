@@ -18,8 +18,11 @@ import com.semestral.venta.model.Detalle;
 import com.semestral.venta.model.Venta;
 import com.semestral.venta.repository.VentaRepository;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VentaService {
@@ -28,22 +31,29 @@ public class VentaService {
     private final ProductoClient productoClient;
 
     public List<VentaResponseDTO> obtenerTodas() {
+        log.info("[VentaService] Consultando todas las ventas");
         return ventaRe.findAll().stream()
             .map(this::convertToDTO)
             .collect(Collectors.toList());
     }
 
     public VentaResponseDTO obtenerPorId(Long id) {
+        log.info("[VentaService] Buscando venta con ID: {}", id);
         Venta venta = ventaRe.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(id));
+            .orElseThrow(() -> {
+                log.warn("[VentaService] Venta ID {} no encontrada", id);
+                return new ResourceNotFoundException(id);
+            });
         return convertToDTO(venta);
     }
 
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
+        log.info("[VentaService] Iniciando creación de nueva venta");
         Venta venta = new Venta();
         venta.setFechaV(parseFecha(dto.getFechaV()));
         venta.setTotal(0.0);
         Venta nuevaVenta = ventaRe.save(venta);
+        log.info("[VentaService] Venta creada exitosamente con ID: {}", nuevaVenta.getIdVenta());
         return convertToDTO(nuevaVenta);
     }
 
@@ -87,21 +97,24 @@ public class VentaService {
             try {
                 Map<String, Object> producto = productoClient.obtenerPorId(detalle.getProductoId());
                 dto.setProductoNombre(producto != null ? String.valueOf(producto.get("nombreProd")) : null);
-            } catch (Exception ignored) {
+            } catch (FeignException e) {
+                log.warn("[VentaService] No se pudo obtener el nombre del producto ID {} desde ms-productos: {}", detalle.getProductoId(), e.getMessage());
+            } catch (Exception e) {
+                log.error("[VentaService] Error inesperado al mapear el producto ID {}: {}", detalle.getProductoId(), e.getMessage());
             }
         }
         return dto;
     }
 
     private LocalDateTime parseFecha(String fechaV) {
-
         if (fechaV == null || fechaV.isBlank()) {
             return LocalDateTime.now();
         }
         try {
             return LocalDateTime.parse(fechaV);
         } catch (DateTimeParseException ex) {
-            throw new IllegalArgumentException("fechaV debe tener formato YYYY/MM/DD, por ejemplo 2024-05-22T14:30:00", ex);
+            log.warn("[VentaService] Error al parsear la fecha ingresada: {}", fechaV);
+            throw new IllegalArgumentException("fechaV debe tener formato YYYY-MM-DDTHH:mm:ss, por ejemplo 2024-05-22T14:30:00", ex);
         }
     }
 }

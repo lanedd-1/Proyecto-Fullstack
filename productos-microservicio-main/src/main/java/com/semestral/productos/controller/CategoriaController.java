@@ -116,7 +116,7 @@ public class CategoriaController {
 
         @Operation(
         summary = "Actualiza el nombre de la categoria por ID",
-        description = "Actualia el nombre de la categoria por el ID ingresado"
+        description = "Actualiza el nombre de la categoria por el ID ingresado"
     )
     @ApiResponses({
         @ApiResponse(

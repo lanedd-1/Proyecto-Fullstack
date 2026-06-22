@@ -35,7 +35,7 @@ public class ProductoDTO {
     
     @Schema(
         description = "Precio unitario del producto",
-        example = "10000.0"
+        example = "10000.00"
     )
     @JsonProperty("precioUnitario")
     private Double precioUnitario;

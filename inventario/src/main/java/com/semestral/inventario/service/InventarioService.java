@@ -113,7 +113,7 @@ public class InventarioService {
 
 
         if (registro.getStock() < re.getCantidad()) {
-            throw new IllegalArgumentException("Stock insuficiente en esta ubicación. Disponible: " 
+            throw new IllegalArgumentException("Stock insuficiente en esta ubicación Disponible: " 
                     + registro.getStock() + ", Solicitado: " + re.getCantidad());
     }
 

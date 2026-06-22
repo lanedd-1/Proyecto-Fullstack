@@ -31,29 +31,29 @@ public class VentaService {
     private final ProductoClient productoClient;
 
     public List<VentaResponseDTO> obtenerTodas() {
-        log.info("[VentaService] Consultando todas las ventas");
+        log.info("Consultando todas las ventas");
         return ventaRe.findAll().stream()
             .map(this::convertToDTO)
             .collect(Collectors.toList());
     }
 
     public VentaResponseDTO obtenerPorId(Long id) {
-        log.info("[VentaService] Buscando venta con ID: {}", id);
+        log.info("Buscando venta con ID: {}", id);
         Venta venta = ventaRe.findById(id)
             .orElseThrow(() -> {
-                log.warn("[VentaService] Venta ID {} no encontrada", id);
+                log.warn("Venta ID {} no encontrada", id);
                 return new ResourceNotFoundException(id);
             });
         return convertToDTO(venta);
     }
 
     public VentaResponseDTO crearVenta(VentaRequestDTO dto) {
-        log.info("[VentaService] Iniciando creación de nueva venta");
+        log.info("Iniciando creación de nueva venta");
         Venta venta = new Venta();
         venta.setFechaV(parseFecha(dto.getFechaV()));
         venta.setTotal(0.0);
         Venta nuevaVenta = ventaRe.save(venta);
-        log.info("[VentaService] Venta creada exitosamente con ID: {}", nuevaVenta.getIdVenta());
+        log.info("Venta creada exitosamente con ID: {}", nuevaVenta.getIdVenta());
         return convertToDTO(nuevaVenta);
     }
 
@@ -98,9 +98,9 @@ public class VentaService {
                 Map<String, Object> producto = productoClient.obtenerPorId(detalle.getProductoId());
                 dto.setProductoNombre(producto != null ? String.valueOf(producto.get("nombreProd")) : null);
             } catch (FeignException e) {
-                log.warn("[VentaService] No se pudo obtener el nombre del producto ID {} desde ms-productos: {}", detalle.getProductoId(), e.getMessage());
+                log.warn("No se pudo obtener el nombre del producto ID {} desde ms-productos: {}", detalle.getProductoId(), e.getMessage());
             } catch (Exception e) {
-                log.error("[VentaService] Error inesperado al mapear el producto ID {}: {}", detalle.getProductoId(), e.getMessage());
+                log.error("Error inesperado al mapear el producto ID {}: {}", detalle.getProductoId(), e.getMessage());
             }
         }
         return dto;
@@ -113,7 +113,7 @@ public class VentaService {
         try {
             return LocalDateTime.parse(fechaV);
         } catch (DateTimeParseException ex) {
-            log.warn("[VentaService] Error al parsear la fecha ingresada: {}", fechaV);
+            log.warn("Error al parsear la fecha ingresada: {}", fechaV);
             throw new IllegalArgumentException("fechaV debe tener formato YYYY-MM-DDTHH:mm:ss, por ejemplo 2024-05-22T14:30:00", ex);
         }
     }

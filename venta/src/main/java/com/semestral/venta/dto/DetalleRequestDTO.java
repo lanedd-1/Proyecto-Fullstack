@@ -20,8 +20,8 @@ public class DetalleRequestDTO {
     private Integer cantidad;
     
     @Schema(
-        description = "Precio del producto en el detalle de venta",
-        example = "19999.99"
+        description = "ID de la venta",
+        example = "1"
     )
     @NotNull(message = "La ventaId es obligatoria")
     private Long ventaId;

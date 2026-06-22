@@ -125,7 +125,7 @@ public class EstadoController {
 
     @Operation(
         summary = "Crea nuevo un estado ",
-        description = "Crea un nuevo estado de envio, Retorna 409 si ya existe une stado con el mismo nombre"
+        description = "Crea un nuevo estado de envio, Retorna 409 si ya existe un estado con el mismo nombre"
     )
     @ApiResponses({
         @ApiResponse(
@@ -143,7 +143,7 @@ public class EstadoController {
         ),
         @ApiResponse(
             responseCode = "409",
-            description = "Ya eiste un estado con el mismo nombre",
+            description = "Ya existe un estado con el mismo nombre",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
         )
     })

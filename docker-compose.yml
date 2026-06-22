@@ -1,6 +1,4 @@
 services:
- 
-  #Servicio 1: levantar MySQL
   mysql:
     image: mysql:8.4
     container_name: mysql-microservicios
@@ -11,9 +9,9 @@ services:
       - mysql-data:/var/lib/mysql
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     ports:
-      - "3307:3306"
+      - "3309:3306"
     healthcheck:
-      test: ["CMD","mysqladmin","ping","-h","localhost","-u","root", "-prootpass"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,7 +19,6 @@ services:
     networks:
       - microservicios-net
  
-  #Servicio 2: Eureka
   eureka-server:
     build:
       context: ./eurekaserver
@@ -33,7 +30,6 @@ services:
     networks:
       - microservicios-net
  
-  #Servicio 3: estado
   gestion_estado:
     build:
       context: ./gestion_estado
@@ -54,7 +50,6 @@ services:
         aliases:
           - gestion-estado
  
-  #Servicio 4: configuracion
   gestion_configuracion:
     build:
       context: ./gestion_configuracion
@@ -75,7 +70,6 @@ services:
         aliases:
           - gestion-configuracion
  
-  #Servicio 5: usuarios
   gestion_usuarios:
     build:
       context: ./gestion_usuarios
@@ -96,7 +90,6 @@ services:
         aliases:
           - gestion-usuarios
  
-  #Servicio 6: direccion
   gestion_direccion:
     build:
       context: ./gestion_direccion
@@ -117,7 +110,6 @@ services:
         aliases:
           - gestion-direccion
  
-  #Servicio 7: inventario
   inventario:
     build:
       context: ./inventario
@@ -136,7 +128,6 @@ services:
     networks:
       - microservicios-net
  
-  #Servicio 8: productos
   productos-microservicio-main:
     build:
       context: ./productos-microservicio-main
@@ -155,7 +146,6 @@ services:
     networks:
       - microservicios-net
  
-  #Servicio 9: envios
   gestion_envio:
     build:
       context: ./gestion_envio
@@ -176,7 +166,6 @@ services:
         aliases:
           - gestion-envio
  
-  #Servicio 10: ventas
   venta:
     build:
       context: ./venta
@@ -195,7 +184,6 @@ services:
     networks:
       - microservicios-net
  
-  #Servicio 11: api-gateway (siempre al final, depende de todos)
   api-gateway:
     build:
       context: ./apigateway

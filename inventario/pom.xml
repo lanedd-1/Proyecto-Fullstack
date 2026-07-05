@@ -128,6 +128,16 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.14</version>
+				<configuration>
+					<excludes>
+						<exclude>**/model/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/exception/**</exclude>
+						<exclude>**/client/**</exclude>
+						<exclude>**/*Application.class</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<!-- prepara el agente de instrumentacion antes de ejecutar los test-->
 					<execution>

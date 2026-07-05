@@ -2,6 +2,8 @@ package com.semestral.productos.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -112,5 +114,60 @@ class ProductoServiceTest {
 
         verify(categoriaService, times(1)).findById(1L);
         verify(productoRepository, times(1)).save(any(Productos.class));
+    }
+
+    @Test
+    @DisplayName("saveProducto() lanza excepción si la categoría es nula")
+    void saveProducto_debeLanzarExcepcionCuandoCategoriaEsNula() {
+        ProductoRequestDTO requestSinCategoria = new ProductoRequestDTO(
+            "80818902",
+            "Collar de oro 9 kilates",
+            "Desc",
+            BigDecimal.valueOf(820.00),
+            "foto",
+            null
+        );
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> productoService.saveProducto(requestSinCategoria)
+        );
+
+        assertEquals("El id de categoría es obligatorio", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("encontrarPorId() devuelve vacío si no existe el producto")
+    void encontrarPorId_debeRetornarVacioCuandoNoExiste() {
+        when(productoRepository.findById(99L)).thenReturn(Optional.empty());
+
+        Optional<ProductoResponseDTO> resultado = productoService.encontrarPorId(99L);
+
+        assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    @DisplayName("updatePrecio() actualiza el precio del producto")
+    void updatePrecio_debeActualizarPrecio() {
+        when(productoRepository.findById(1L)).thenReturn(Optional.of(productoEjemplo));
+        when(productoRepository.save(any(Productos.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ProductoResponseDTO resultado = productoService.updatePrecio(1L, BigDecimal.valueOf(900.00));
+
+        assertNotNull(resultado);
+        assertEquals(BigDecimal.valueOf(900.00), resultado.getPrecioUnitario());
+        verify(productoRepository, times(1)).save(any(Productos.class));
+    }
+
+    @Test
+    @DisplayName("updateDescripcion() ignora descripciones vacías")
+    void updateDescripcion_debeIgnorarDescripcionVacia() {
+        when(productoRepository.findById(1L)).thenReturn(Optional.of(productoEjemplo));
+        when(productoRepository.save(any(Productos.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ProductoResponseDTO resultado = productoService.updateDescripcion(1L, "   ");
+
+        assertNotNull(resultado);
+        assertEquals("Collar de oro 9 kilates con detalles bordados en plata", resultado.getDescProd());
     }
 }

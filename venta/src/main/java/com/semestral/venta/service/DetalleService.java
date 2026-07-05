@@ -112,7 +112,7 @@ public class DetalleService {
 
     public DetalleResponseDTO actualizarDetalle(Long id, DetalleRequestDTO dto) {
         Detalle existente = detalleRe.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Detalle no encontrado con id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException(id));
 
         Double subTotalAnterior = existente.getSubTotal();
         Long ventaOriginalId = existente.getIdVenta() != null ? existente.getIdVenta().getIdVenta() : null;
@@ -169,7 +169,7 @@ public class DetalleService {
 
     public void eliminarDetalle(Long id) {
         Detalle detalle = detalleRe.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Detalle no encontrado con id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException(id));
         
         if (detalle.getIdVenta() != null) {
             Venta venta = detalle.getIdVenta();

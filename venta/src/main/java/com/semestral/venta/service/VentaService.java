@@ -61,18 +61,9 @@ public class VentaService {
         VentaResponseDTO dto = new VentaResponseDTO();
         dto.setIdVenta(venta.getIdVenta());
         dto.setFechaV(venta.getFechaV() != null ? venta.getFechaV().toString() : null);
-        dto.setTotal(calculateTotal(venta));
+        dto.setTotal(venta.getTotal() != null ? venta.getTotal() : 0.0);
         dto.setDetalles(convertDetalles(venta.getDetalles()));
         return dto;
-    }
-
-    private Double calculateTotal(Venta venta) {
-        if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
-            return 0.0;
-        }
-        return venta.getDetalles().stream()
-            .mapToDouble(Detalle::getSubTotal)
-            .sum();
     }
 
     private List<DetalleResponseDTO> convertDetalles(List<Detalle> detalles) {
@@ -108,7 +99,7 @@ public class VentaService {
 
     private LocalDateTime parseFecha(String fechaV) {
         if (fechaV == null || fechaV.isBlank()) {
-            return LocalDateTime.now();
+            throw new IllegalArgumentException("fechaV es obligatorio y no puede estar vacío");
         }
         try {
             return LocalDateTime.parse(fechaV);

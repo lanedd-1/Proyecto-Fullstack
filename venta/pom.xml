@@ -134,6 +134,15 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>com/semestral/venta/model/**</exclude>
+								<exclude>com/semestral/venta/dto/**</exclude>
+								<exclude>com/semestral/venta/config/**</exclude>
+								<exclude>com/semestral/venta/exception/**</exclude>
+								<exclude>**/VentaApplication.class</exclude>
+							</excludes>
+						</configuration>
 					</execution>	
 				</executions>
 			</plugin>

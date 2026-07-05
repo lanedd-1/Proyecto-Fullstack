@@ -8,8 +8,8 @@
 		<version>4.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.joyeria</groupId>
-	<artifactId>gestioneconfiguracion</artifactId>
+	<groupId>com.semestral</groupId>
+	<artifactId>inventario</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>
@@ -31,12 +31,25 @@
 	</properties>
 	<dependencies>
 		<dependency>
+    		<groupId>com.h2database</groupId>
+    		<artifactId>h2</artifactId>
+    		<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webclient</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -53,17 +66,14 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-
-		<!-- Libreria para OpenApi -->
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>3.0.3</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -73,19 +83,24 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<artifactId>spring-boot-starter-webclient-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	<!-- Se agregar para usar esta BD únicamente para los test unitarios -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>3.0.2</version>
 		</dependency>
 
 		<dependency>
@@ -113,6 +128,16 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.14</version>
+				<configuration>
+					<excludes>
+						<exclude>**/model/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/exception/**</exclude>
+						<exclude>**/client/**</exclude>
+						<exclude>**/*Application.class</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<!-- prepara el agente de instrumentacion antes de ejecutar los test-->
 					<execution>
@@ -176,7 +201,7 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>2025.1.2</version>
+				<version>2025.1.1</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

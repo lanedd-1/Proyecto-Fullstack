@@ -1,5 +1,5 @@
 server:
-  port: 8071
+  port: 8800
 
 spring:
   application:
@@ -13,18 +13,22 @@ spring:
               uri: lb://gestionestado
               predicates:
               - Path=/api/estados,/api/estados/**
-            - id: ruta-gestion_configuracion
-              uri: lb://gestion_configuracion
+            - id: ruta-gestion-configuracion
+              uri: lb://gestion-configuracion
               predicates:
                 - Path=/api/configuracion,/api/configuracion/**
             - id: ruta-gestion-usuarios
               uri: lb://gestion-usuarios
               predicates:
                 - Path=/api/usuarios,/api/usuarios/**
-            - id: ruta-gestion_direccion
-              uri: lb://gestion_direccion
+            - id: ruta-roles
+              uri: lb://gestion-usuarios
               predicates:
-                - Path=/api/direccion,/api/direccion/**
+                - Path=/api/roles,/api/roles/**
+            - id: ruta-gestion-direccion
+              uri: lb://gestion-direccion
+              predicates:
+                - Path=/api/direcciones,/api/direcciones/**
             - id: ruta-inventario
               uri: lb://inventario
               predicates:
@@ -33,10 +37,18 @@ spring:
               uri: lb://productos
               predicates:
                 - Path=/api/productos,/api/productos/**
-            - id: ruta-gestion_envio
-              uri: lb://gestion_envio
+            - id: ruta-categoria
+              uri: lb://productos
               predicates:
-                - Path=/api/envio,/api/envio/**
+                - Path=/api/categoria,/api/categoria/**
+            - id: ruta-gestion-envio
+              uri: lb://gestion-envio
+              predicates:
+                - Path=/api/envios,/api/envios/**
+            - id: ruta-historial
+              uri: lb://gestion-envio
+              predicates:
+                - Path=/api/historial,/api/historial/**
             - id: ruta-ventas
               uri: lb://ventas
               predicates:

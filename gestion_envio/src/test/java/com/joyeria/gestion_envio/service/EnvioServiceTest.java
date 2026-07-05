@@ -171,4 +171,104 @@ public class EnvioServiceTest {
         assertThrows(BusinessConflictException.class, () -> envioService.update(1L, reqUpdate));
         verify(envioRep, times(0)).save(any(Envio.class));
     }
+
+    @Test
+    @DisplayName("saveEnvio() lanza BusinessConflictException si idVenta es nulo")
+    void saveEnvio_debeLanzarExcepcion_cuandoIdVentaEsNulo() {
+        requestCrear.setIdVenta(null);
+
+        assertThrows(BusinessConflictException.class, () -> envioService.saveEnvio(requestCrear));
+        verify(envioRep, times(0)).save(any(Envio.class));
+    }
+
+    @Test
+    @DisplayName("saveEnvio() lanza BusinessConflictException si idDireccion es nulo")
+    void saveEnvio_debeLanzarExcepcion_cuandoIdDireccionEsNulo() {
+        requestCrear.setIdDireccion(null);
+
+        assertThrows(BusinessConflictException.class, () -> envioService.saveEnvio(requestCrear));
+        verify(envioRep, times(0)).save(any(Envio.class));
+    }
+
+    @Test
+    @DisplayName("saveEnvio() lanza ExternalServiceException si ms-ventas no responde")
+    void saveEnvio_debeLanzarExcepcion_cuandoMsVentasSeCae() {
+        FeignException serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        when(ventaClient.obtenerVentaPorId(50L)).thenThrow(serviceUnavailable);
+
+        assertThrows(ExternalServiceException.class, () -> envioService.saveEnvio(requestCrear));
+        verify(envioRep, times(0)).save(any(Envio.class));
+    }
+
+    @Test
+    @DisplayName("saveEnvio() lanza ResourceNotFoundException si la Direccion no existe (404 Feign)")
+    void saveEnvio_debeLanzarExcepcion_cuandoDireccionNoExiste() {
+        FeignException.NotFound notFound = mock(FeignException.NotFound.class);
+        when(direccionClient.obtenerDireccionPorId(10L)).thenThrow(notFound);
+
+        assertThrows(ResourceNotFoundException.class, () -> envioService.saveEnvio(requestCrear));
+        verify(envioRep, times(0)).save(any(Envio.class));
+    }
+
+    @Test
+    @DisplayName("saveEnvio() aplica valores por defecto cuando fechas y estado no son enviados")
+    void saveEnvio_debeAplicarValoresPorDefecto_cuandoNoSeEnvian() {
+        EnvioRequestDTO reqSinDefaults = new EnvioRequestDTO();
+        reqSinDefaults.setIdVenta(50L);
+        reqSinDefaults.setIdDireccion(10L);
+        // fechaEnvio, fechaRecepcion y estado quedan nulos
+
+        when(envioRep.save(any(Envio.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        EnvioResponseDTO resultado = envioService.saveEnvio(reqSinDefaults);
+
+        assertNotNull(resultado);
+        assertEquals("PREPARACION", resultado.getEstado());
+        assertNotNull(resultado.getFechaEnvio());
+        assertNotNull(resultado.getFechaRecepcion());
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si el envio no existe")
+    void update_debeLanzarExcepcion_cuandoEnvioNoExiste() {
+        when(envioRep.findById(99L)).thenReturn(Optional.empty());
+
+        EnvioRequestDTO reqUpdate = new EnvioRequestDTO();
+        reqUpdate.setEstado("EN_CAMINO");
+
+        assertThrows(ResourceNotFoundException.class, () -> envioService.update(99L, reqUpdate));
+        verify(envioRep, times(0)).save(any(Envio.class));
+    }
+
+    @Test
+    @DisplayName("update() actualiza idVenta, idDireccion y fechaEnvio cuando se envian")
+    void update_debeActualizarIdVentaIdDireccionYFecha_cuandoSeEnvian() {
+        when(envioRep.findById(1L)).thenReturn(Optional.of(envio));
+        when(envioRep.save(any(Envio.class))).thenReturn(envio);
+
+        EnvioRequestDTO reqUpdate = new EnvioRequestDTO();
+        reqUpdate.setIdVenta(99L);
+        reqUpdate.setIdDireccion(88L);
+        reqUpdate.setFechaEnvio(LocalDateTime.now());
+
+        EnvioResponseDTO resultado = envioService.update(1L, reqUpdate);
+
+        assertNotNull(resultado);
+        verify(envioRep, times(1)).save(any(Envio.class));
+    }
+
+    @Test
+    @DisplayName("update() no modifica el estado si viene en blanco")
+    void update_noDebeModificarEstado_cuandoVieneEnBlanco() {
+        when(envioRep.findById(1L)).thenReturn(Optional.of(envio));
+        when(envioRep.save(any(Envio.class))).thenReturn(envio);
+
+        EnvioRequestDTO reqUpdate = new EnvioRequestDTO();
+        reqUpdate.setEstado("   ");
+
+        EnvioResponseDTO resultado = envioService.update(1L, reqUpdate);
+
+        assertNotNull(resultado);
+        assertEquals("PREPARACION", resultado.getEstado());
+    }
 }

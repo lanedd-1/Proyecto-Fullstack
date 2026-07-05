@@ -84,4 +84,19 @@ public class HistorialControllerTest {
                 .andExpect(jsonPath("$.idHistorial").value(1))
                 .andExpect(jsonPath("$.estado").value("ENTREGADO"));
     }
+
+    @Test
+    @DisplayName("GET api/historial/{id} debe retornar 200 cuando el registro existe")
+    void obtenerHistorialPorId_debeRetornar200_cuandoExiste() throws Exception {
+        HistorialResponseDTO dto = new HistorialResponseDTO(1L, 10L, LocalDateTime.now(), "ENTREGADO", 5L);
+
+        when(historialService.findByIdOrThrow(1L)).thenReturn(dto);
+
+        mockMvc.perform(get("/api/historial/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idHistorial").value(1))
+                .andExpect(jsonPath("$.estado").value("ENTREGADO"));
+    }
 }

@@ -206,4 +206,139 @@ public class DireccionServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> direccionService.delete(99L));
         verify(direccionRep, times(0)).deleteById(any());
     }
+
+    @Test
+    @DisplayName("create() lanza RuntimeException si idComuna es nulo")
+    void create_debeLanzarExcepcion_cuandoIdComunaEsNulo() {
+        requestDTO.setIdComuna(null);
+
+        assertThrows(RuntimeException.class, () -> direccionService.create(requestDTO));
+        verify(direccionRep, times(0)).save(any(Direccion.class));
+    }
+
+    @Test
+    @DisplayName("create() lanza ResourceNotFoundException si el estado (Feign) no existe")
+    void create_debeLanzarExcepcion_cuandoEstadoNoExiste() {
+        FeignException.NotFound notFound = mock(FeignException.NotFound.class);
+        when(estadoClient.obtenerEstadoPorId(1L)).thenThrow(notFound);
+
+        assertThrows(ResourceNotFoundException.class, () -> direccionService.create(requestDTO));
+        verify(direccionRep, times(0)).save(any(Direccion.class));
+    }
+
+    @Test
+    @DisplayName("create() lanza ExternalServiceException si ms-estados se cae")
+    void create_debeLanzarExcepcion_cuandoMsEstadosFalla() {
+        FeignException serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        when(estadoClient.obtenerEstadoPorId(1L)).thenThrow(serviceUnavailable);
+
+        assertThrows(ExternalServiceException.class, () -> direccionService.create(requestDTO));
+        verify(direccionRep, times(0)).save(any(Direccion.class));
+    }
+
+    @Test
+    @DisplayName("create() no valida usuario/estado externos cuando idUsuario e idEstado son nulos")
+    void create_noDebeLlamarClientes_cuandoIdsExternosSonNulos() {
+        requestDTO.setIdUsuario(null);
+        requestDTO.setIdEstado(null);
+
+        when(comunaRep.findById(1L)).thenReturn(Optional.of(comuna));
+        when(direccionRep.save(any(Direccion.class))).thenReturn(direccion);
+
+        DireccionResponseDTO resultado = direccionService.create(requestDTO);
+
+        assertNotNull(resultado);
+        verify(usuarioClient, times(0)).obtenerUsuarioPorId(any());
+        verify(estadoClient, times(0)).obtenerEstadoPorId(any());
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si la direccion no existe")
+    void update_debeLanzarExcepcion_cuandoDireccionNoExiste() {
+        when(direccionRep.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> direccionService.update(99L, requestDTO));
+        verify(direccionRep, times(0)).save(any(Direccion.class));
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si la nueva comuna no existe")
+    void update_debeLanzarExcepcion_cuandoNuevaComunaNoExiste() {
+        when(direccionRep.findById(1L)).thenReturn(Optional.of(direccion));
+        when(comunaRep.findById(99L)).thenReturn(Optional.empty());
+
+        DireccionRequestDTO req = new DireccionRequestDTO();
+        req.setIdComuna(99L);
+
+        assertThrows(ResourceNotFoundException.class, () -> direccionService.update(1L, req));
+        verify(direccionRep, times(0)).save(any(Direccion.class));
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si el nuevo usuario (Feign) no existe")
+    void update_debeLanzarExcepcion_cuandoNuevoUsuarioNoExiste() {
+        when(direccionRep.findById(1L)).thenReturn(Optional.of(direccion));
+        FeignException.NotFound notFound = mock(FeignException.NotFound.class);
+        when(usuarioClient.obtenerUsuarioPorId(20L)).thenThrow(notFound);
+
+        DireccionRequestDTO req = new DireccionRequestDTO();
+        req.setIdUsuario(20L);
+
+        assertThrows(ResourceNotFoundException.class, () -> direccionService.update(1L, req));
+        verify(direccionRep, times(0)).save(any(Direccion.class));
+    }
+
+    @Test
+    @DisplayName("update() lanza ExternalServiceException si ms-usuarios falla al actualizar")
+    void update_debeLanzarExcepcion_cuandoMsUsuariosFallaAlActualizar() {
+        when(direccionRep.findById(1L)).thenReturn(Optional.of(direccion));
+        FeignException serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        when(usuarioClient.obtenerUsuarioPorId(20L)).thenThrow(serviceUnavailable);
+
+        DireccionRequestDTO req = new DireccionRequestDTO();
+        req.setIdUsuario(20L);
+
+        assertThrows(ExternalServiceException.class, () -> direccionService.update(1L, req));
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si el nuevo estado (Feign) no existe")
+    void update_debeLanzarExcepcion_cuandoNuevoEstadoNoExiste() {
+        when(direccionRep.findById(1L)).thenReturn(Optional.of(direccion));
+        FeignException.NotFound notFound = mock(FeignException.NotFound.class);
+        when(estadoClient.obtenerEstadoPorId(7L)).thenThrow(notFound);
+
+        DireccionRequestDTO req = new DireccionRequestDTO();
+        req.setIdEstado(7L);
+
+        assertThrows(ResourceNotFoundException.class, () -> direccionService.update(1L, req));
+        verify(direccionRep, times(0)).save(any(Direccion.class));
+    }
+
+    @Test
+    @DisplayName("update() lanza ExternalServiceException si ms-estados falla al actualizar")
+    void update_debeLanzarExcepcion_cuandoMsEstadosFallaAlActualizar() {
+        when(direccionRep.findById(1L)).thenReturn(Optional.of(direccion));
+        FeignException serviceUnavailable = mock(FeignException.ServiceUnavailable.class);
+        when(estadoClient.obtenerEstadoPorId(7L)).thenThrow(serviceUnavailable);
+
+        DireccionRequestDTO req = new DireccionRequestDTO();
+        req.setIdEstado(7L);
+
+        assertThrows(ExternalServiceException.class, () -> direccionService.update(1L, req));
+    }
+
+    @Test
+    @DisplayName("update() con campos nulos no modifica calle ni numero")
+    void update_conCamposNulos_noDebeModificarCalleNiNumero() {
+        when(direccionRep.findById(1L)).thenReturn(Optional.of(direccion));
+        when(direccionRep.save(any(Direccion.class))).thenReturn(direccion);
+
+        DireccionRequestDTO req = new DireccionRequestDTO();
+
+        DireccionResponseDTO resultado = direccionService.update(1L, req);
+
+        assertNotNull(resultado);
+        assertEquals("Av. Siempre Viva", resultado.getCalle());
+    }
 }

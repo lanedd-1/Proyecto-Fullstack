@@ -1,7 +1,9 @@
 package com.semestral.gestion_usuarios.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import com.semestral.gestion_usuarios.exception.BusinessConflictException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,5 +83,58 @@ public class UsuarioControllerTest {
                 .andExpect(status().isOk()) // HTTP 200
                 .andExpect(jsonPath("$.nombreU").value("Juan Actualizado"))
                 .andExpect(jsonPath("$.correoU").value("juan_nuevo@mail.com"));
+    }
+
+    @Test
+    @DisplayName("GET api/usuarios/{id} debe retornar 200 cuando el usuario existe")
+    void getById_debeRetornar200_cuandoExiste() throws Exception {
+        UsuarioResponseDTO dto = new UsuarioResponseDTO(1L, "Juan Perez", "11111111-1", "juan@mail.com", 1L, "ADMIN", 1L);
+        when(usuarioService.findByIdOrThrow(1L)).thenReturn(dto);
+
+        mockMvc.perform(get("/api/usuarios/1").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.correoU").value("juan@mail.com"));
+    }
+
+    @Test
+    @DisplayName("POST api/usuarios/login debe retornar 200 con credenciales correctas")
+    void login_debeRetornar200_cuandoCredencialesValidas() throws Exception {
+        Map<String, String> req = Map.of("correo", "juan@mail.com", "clave", "12345");
+        UsuarioResponseDTO dto = new UsuarioResponseDTO(1L, "Juan Perez", "11111111-1", "juan@mail.com", 1L, "ADMIN", 1L);
+        when(usuarioService.loginDirecto("juan@mail.com", "12345")).thenReturn(dto);
+
+        mockMvc.perform(post("/api/usuarios/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.mensaje").value("Sesión iniciada correctamente"));
+    }
+
+    @Test
+    @DisplayName("POST api/usuarios/login debe retornar 409 con credenciales invalidas")
+    void login_debeRetornar409_cuandoCredencialesInvalidas() throws Exception {
+        Map<String, String> req = Map.of("correo", "juan@mail.com", "clave", "mala");
+        when(usuarioService.loginDirecto("juan@mail.com", "mala"))
+                .thenThrow(new BusinessConflictException("Credenciales inválidas: El correo o la contraseña son incorrectos"));
+
+        mockMvc.perform(post("/api/usuarios/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("POST api/usuarios debe retornar 400 cuando los datos son invalidos")
+    void crear_debeRetornar400_cuandoDatosInvalidos() throws Exception {
+        UsuarioRequestDTO invalido = new UsuarioRequestDTO("", "", "no-es-correo", "123", -1L, -1L);
+
+        mockMvc.perform(post("/api/usuarios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalido)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }

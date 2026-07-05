@@ -216,6 +216,138 @@ public class UsuarioServiceTest {
         assertThrows(BusinessConflictException.class, () -> usuarioService.loginDirecto("juan@mail.com", "claveMala"));
     }
 
+    @Test
+    @DisplayName("saveUsuario() lanza BusinessConflictException si idRol es nulo")
+    void saveUsuario_debeLanzarExcepcion_cuandoIdRolEsNulo() {
+        UsuarioRequestDTO req = new UsuarioRequestDTO("Juan Perez", "11111111-1", "juan@mail.com", "12345", null, 1L);
+
+        assertThrows(BusinessConflictException.class, () -> usuarioService.saveUsuario(req));
+    }
+
+    @Test
+    @DisplayName("saveUsuario() lanza BusinessConflictException si idEstado es nulo")
+    void saveUsuario_debeLanzarExcepcion_cuandoIdEstadoEsNulo() {
+        UsuarioRequestDTO req = new UsuarioRequestDTO("Juan Perez", "11111111-1", "juan@mail.com", "12345", 1L, null);
+
+        assertThrows(BusinessConflictException.class, () -> usuarioService.saveUsuario(req));
+    }
+
+    @Test
+    @DisplayName("saveUsuario() lanza ResourceNotFoundException si el rol no existe")
+    void saveUsuario_debeLanzarExcepcion_cuandoRolNoExiste() {
+        when(rolRep.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> usuarioService.saveUsuario(requestCrear));
+        verify(usuarioRep, times(0)).save(any(Usuario.class));
+    }
+
+    @Test
+    @DisplayName("saveUsuario() lanza ResourceNotFoundException si el estado no existe en ms-estado (404)")
+    void saveUsuario_debeLanzarExcepcion_cuandoEstadoNoExiste() {
+        when(rolRep.findById(1L)).thenReturn(Optional.of(rolEjemplo));
+        when(estadoClient.obtenerEstadoPorId(1L)).thenThrow(
+                new FeignException.NotFound("Estado no encontrado", buildDummyRequest(), null, null)
+        );
+
+        assertThrows(ResourceNotFoundException.class, () -> usuarioService.saveUsuario(requestCrear));
+        verify(usuarioRep, times(0)).save(any(Usuario.class));
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si el usuario no existe")
+    void update_debeLanzarExcepcion_cuandoUsuarioNoExiste() {
+        when(usuarioRep.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> usuarioService.update(99L, requestActualizar));
+    }
+
+    @Test
+    @DisplayName("update() no cambia el correo si es el mismo (ignorando mayusculas)")
+    void update_noDebeChocar_cuandoCorreoEsElMismo() {
+        UsuarioRequestDTO req = new UsuarioRequestDTO("Juan Perez", "11111111-1", "JUAN@MAIL.COM", "", 1L, 1L);
+
+        when(usuarioRep.findById(1L)).thenReturn(Optional.of(usuarioEjemplo));
+        when(rolRep.findById(1L)).thenReturn(Optional.of(rolEjemplo));
+        when(usuarioRep.save(any(Usuario.class))).thenReturn(usuarioEjemplo);
+
+        UsuarioResponseDTO resultado = usuarioService.update(1L, req);
+
+        assertNotNull(resultado);
+        verify(usuarioRep, times(0)).findByCorreoU("JUAN@MAIL.COM");
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si el nuevo rol no existe")
+    void update_debeLanzarExcepcion_cuandoNuevoRolNoExiste() {
+        UsuarioRequestDTO req = new UsuarioRequestDTO("Juan Actualizado", "11111111-1", null, "", 99L, null);
+
+        when(usuarioRep.findById(1L)).thenReturn(Optional.of(usuarioEjemplo));
+        when(rolRep.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> usuarioService.update(1L, req));
+        verify(usuarioRep, times(0)).save(any(Usuario.class));
+    }
+
+    @Test
+    @DisplayName("update() lanza ResourceNotFoundException si el nuevo estado no existe en ms-estado")
+    void update_debeLanzarExcepcion_cuandoNuevoEstadoNoExiste() {
+        UsuarioRequestDTO req = new UsuarioRequestDTO("Juan Actualizado", "11111111-1", null, "", null, 5L);
+
+        when(usuarioRep.findById(1L)).thenReturn(Optional.of(usuarioEjemplo));
+        when(estadoClient.obtenerEstadoPorId(5L)).thenThrow(
+                new FeignException.NotFound("Estado no encontrado", buildDummyRequest(), null, null)
+        );
+
+        assertThrows(ResourceNotFoundException.class, () -> usuarioService.update(1L, req));
+    }
+
+    @Test
+    @DisplayName("update() lanza ExternalServiceException si ms-estado no responde")
+    void update_debeLanzarExcepcion_cuandoMsEstadoNoDisponible() {
+        UsuarioRequestDTO req = new UsuarioRequestDTO("Juan Actualizado", "11111111-1", null, "", null, 5L);
+
+        when(usuarioRep.findById(1L)).thenReturn(Optional.of(usuarioEjemplo));
+        when(estadoClient.obtenerEstadoPorId(5L)).thenThrow(
+                new FeignException.ServiceUnavailable("ms-estados no disponible", buildDummyRequest(), null, null)
+        );
+
+        assertThrows(ExternalServiceException.class, () -> usuarioService.update(1L, req));
+    }
+
+    @Test
+    @DisplayName("update() con clave en blanco no debe modificar la contrasena existente")
+    void update_conClaveEnBlanco_noDebeModificarClave() {
+        UsuarioRequestDTO req = new UsuarioRequestDTO(null, null, null, "   ", null, null);
+
+        when(usuarioRep.findById(1L)).thenReturn(Optional.of(usuarioEjemplo));
+        when(usuarioRep.save(any(Usuario.class))).thenReturn(usuarioEjemplo);
+
+        UsuarioResponseDTO resultado = usuarioService.update(1L, req);
+
+        assertNotNull(resultado);
+        verify(passwordEncoder, times(0)).encode(any());
+    }
+
+    @Test
+    @DisplayName("loginDirecto() lanza BusinessConflictException si el correo es nulo")
+    void loginDirecto_debeLanzarExcepcion_cuandoCorreoEsNulo() {
+        assertThrows(BusinessConflictException.class, () -> usuarioService.loginDirecto(null, "12345"));
+    }
+
+    @Test
+    @DisplayName("loginDirecto() lanza BusinessConflictException si la clave esta en blanco")
+    void loginDirecto_debeLanzarExcepcion_cuandoClaveEnBlanco() {
+        assertThrows(BusinessConflictException.class, () -> usuarioService.loginDirecto("juan@mail.com", "  "));
+    }
+
+    @Test
+    @DisplayName("loginDirecto() lanza BusinessConflictException si el correo no existe")
+    void loginDirecto_debeLanzarExcepcion_cuandoCorreoNoExiste() {
+        when(usuarioRep.findByCorreoU("noexiste@mail.com")).thenReturn(Optional.empty());
+
+        assertThrows(BusinessConflictException.class, () -> usuarioService.loginDirecto("noexiste@mail.com", "12345"));
+    }
+
     private Request buildDummyRequest() {
         return Request.create(Request.HttpMethod.GET, "/api/estados",
                 java.util.Collections.emptyMap(), Request.Body.empty(), null);

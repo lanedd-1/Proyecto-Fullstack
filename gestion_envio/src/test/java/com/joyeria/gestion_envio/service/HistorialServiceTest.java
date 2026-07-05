@@ -156,4 +156,13 @@ public class HistorialServiceTest {
         assertThrows(ExternalServiceException.class, () -> historialService.saveHistorial(requestCrear));
         verify(historialRep, times(0)).save(any());
     }
+
+    @Test
+    @DisplayName("saveHistorial() lanza excepción si el envío referenciado no existe")
+    void saveHistorial_debeLanzarExcepcion_cuandoEnvioNoExiste() {
+        when(envioRep.existsById(10L)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> historialService.saveHistorial(requestCrear));
+        verify(historialRep, times(0)).save(any());
+    }
 }

@@ -1,7 +1,7 @@
-<h1 align="center"> INTEGRANTES </h1>
+<h1 align="center"> PROYECTO FULLSTACK </h1>
 
 
-
+## INTEGRANTES
 NOMBRES INTEGRANTES (EQUIPO 12)//
 
 Matias Olavarria

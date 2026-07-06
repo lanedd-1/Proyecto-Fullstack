@@ -17,19 +17,19 @@ NOMBRES INTEGRANTES (EQUIPO 12)//
 
 
 ## ENLACES SWAGGER DE LOS MICROSERVICIOS
-- `http://localhost:8072/swagger-ui/index.html#/`
- - -`http://localhost:8073/swagger-ui/index.html#/`
+- http://localhost:8072/swagger-ui/index.html#/
+- http://localhost:8073/swagger-ui/index.html#/
 
 
-- `http://localhost:8080/swagger-ui/index.html#/`
-- - `http://localhost:8081/swagger-ui/index.html#/`
-  - - `http://localhost:8082/swagger-ui/index.html#/`
+- http://localhost:8080/swagger-ui/index.html#/
+- http://localhost:8081/swagger-ui/index.html#/
+- http://localhost:8082/swagger-ui/index.html#/
 
 
 
-- `http://localhost:8090/swagger-ui/index.html#/`
-- - `http://localhost:8091/swagger-ui/index.html#/`
- - - `http://localhost:8092/swagger-ui/index.html#/`
+- http://localhost:8090/swagger-ui/index.html#/
+- http://localhost:8091/swagger-ui/index.html#/
+- http://localhost:8092/swagger-ui/index.html#/
 
 
 

@@ -3,32 +3,35 @@
 
 ## INTEGRANTES
 NOMBRES INTEGRANTES (EQUIPO 12)//
-- `Matias Olavarria`:
-- `Renata Valdes`:
-- `Jose Recabarren`:
-Renata Valdes
-Jose Recabarren
+- `Matias Olavarria`
+- `Renata Valdes`
+- `Jose Recabarren`
 
 
 
-DOMINIO DEL PROYECTO//
-
-http://localhost:8800/api
 
 
+## DOMINIO DEL PROYECTO
 
-ENLACES SWAGGER//
+- `'http://localhost:8800/api`
 
-http://localhost:8072/swagger-ui/index.html#/
-http://localhost:8073/swagger-ui/index.html#/
 
-http://localhost:8080/swagger-ui/index.html#/
-http://localhost:8081/swagger-ui/index.html#/
-http://localhost:8082/swagger-ui/index.html#/
+## ENLACES SWAGGER DE LOS MICROSERVICIOS
+- `http://localhost:8072/swagger-ui/index.html#/`
+ - -`http://localhost:8073/swagger-ui/index.html#/`
 
-http://localhost:8090/swagger-ui/index.html#/
-http://localhost:8091/swagger-ui/index.html#/
-http://localhost:8092/swagger-ui/index.html#/
+
+- `http://localhost:8080/swagger-ui/index.html#/`
+- - `http://localhost:8081/swagger-ui/index.html#/`
+  - - `http://localhost:8082/swagger-ui/index.html#/`
+
+
+
+- `http://localhost:8090/swagger-ui/index.html#/`
+- - `http://localhost:8091/swagger-ui/index.html#/`
+ - - `http://localhost:8092/swagger-ui/index.html#/`
+
+
 
 
 

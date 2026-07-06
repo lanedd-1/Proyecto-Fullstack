@@ -13,7 +13,7 @@ NOMBRES INTEGRANTES (EQUIPO 12)//
 
 ## DOMINIO DEL PROYECTO
 
-- `'http://localhost:8800/api`
+- `http://localhost:8800/api`
 
 
 ## ENLACES SWAGGER DE LOS MICROSERVICIOS

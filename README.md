@@ -1,4 +1,6 @@
-####################################################
+<em> # INTEGRANTES </em>
+
+
 
 NOMBRES INTEGRANTES (EQUIPO 12)//
 
@@ -6,13 +8,13 @@ Matias Olavarria
 Renata Valdes
 Jose Recabarren
 
-####################################################
+
 
 DOMINIO DEL PROYECTO//
 
 http://localhost:8800/api
 
-####################################################
+
 
 ENLACES SWAGGER//
 
@@ -27,6 +29,6 @@ http://localhost:8090/swagger-ui/index.html#/
 http://localhost:8091/swagger-ui/index.html#/
 http://localhost:8092/swagger-ui/index.html#/
 
-####################################################
+
 
 

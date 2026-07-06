@@ -1,4 +1,4 @@
-<em> # INTEGRANTES </em>
+<h1 align="center"> INTEGRANTES </h1>
 
 
 

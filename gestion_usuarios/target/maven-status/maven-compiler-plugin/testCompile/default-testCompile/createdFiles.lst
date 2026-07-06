@@ -1,0 +1,7 @@
+com\semestral\gestion_usuarios\repository\RolRepositoryTest.class
+com\semestral\gestion_usuarios\service\UsuarioServiceTest.class
+com\semestral\gestion_usuarios\GestionUsuariosApplicationTests.class
+com\semestral\gestion_usuarios\controller\RolControllerTest.class
+com\semestral\gestion_usuarios\repository\UsuarioRepositoryTest.class
+com\semestral\gestion_usuarios\controller\UsuarioControllerTest.class
+com\semestral\gestion_usuarios\service\RolServiceTest.class

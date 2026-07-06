@@ -790,3 +790,59 @@ Caused by: java.net.UnknownHostException: mysql
 2026-07-05T01:17:33.435-04:00  INFO 46780 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Buscando estado con ID: 99
 2026-07-05T01:17:33.435-04:00  WARN 46780 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado con ID 99 no existe
 2026-07-05T01:17:33.460-04:00  INFO 46780 --- [gestionestado] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-05T20:00:58.352-04:00  INFO 20912 --- [gestionestado] [main] c.j.g.controller.EstadoControllerTest    : Starting EstadoControllerTest using Java 21.0.10 with PID 20912 (started by helss in C:\Users\helss\Documents\GitHub\Proyecto-Fullstack\gestion_estado)
+2026-07-05T20:00:58.354-04:00  INFO 20912 --- [gestionestado] [main] c.j.g.controller.EstadoControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2026-07-05T20:01:01.537-04:00  INFO 20912 --- [gestionestado] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-07-05T20:01:01.537-04:00  INFO 20912 --- [gestionestado] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-07-05T20:01:01.541-04:00  INFO 20912 --- [gestionestado] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-07-05T20:01:01.596-04:00  INFO 20912 --- [gestionestado] [main] c.j.g.controller.EstadoControllerTest    : Started EstadoControllerTest in 3.772 seconds (process running for 6.021)
+2026-07-05T20:01:02.408-04:00  INFO 20912 --- [gestionestado] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.joyeria.gestionestado.repository.EstadoRepositoryTest]: EstadoRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-05T20:01:02.457-04:00  INFO 20912 --- [gestionestado] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.joyeria.gestionestado.GestionestadoApplication for test class com.joyeria.gestionestado.repository.EstadoRepositoryTest
+2026-07-05T20:01:02.459-04:00  INFO 20912 --- [gestionestado] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.joyeria.gestionestado.repository.EstadoRepositoryTest]: EstadoRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-05T20:01:02.474-04:00  INFO 20912 --- [gestionestado] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.joyeria.gestionestado.GestionestadoApplication for test class com.joyeria.gestionestado.repository.EstadoRepositoryTest
+2026-07-05T20:01:02.539-04:00  INFO 20912 --- [gestionestado] [main] c.j.g.repository.EstadoRepositoryTest    : Starting EstadoRepositoryTest using Java 21.0.10 with PID 20912 (started by helss in C:\Users\helss\Documents\GitHub\Proyecto-Fullstack\gestion_estado)
+2026-07-05T20:01:02.540-04:00  INFO 20912 --- [gestionestado] [main] c.j.g.repository.EstadoRepositoryTest    : The following 1 profile is active: "test"
+2026-07-05T20:01:02.791-04:00  INFO 20912 --- [gestionestado] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-05T20:01:02.889-04:00  INFO 20912 --- [gestionestado] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 76 ms. Found 1 JPA repository interface.
+2026-07-05T20:01:02.976-04:00  INFO 20912 --- [gestionestado] [main] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2026-07-05T20:01:03.066-04:00  INFO 20912 --- [gestionestado] [main] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:66ed65c5-f685-424c-b1aa-5e21e254a2a6;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2026-07-05T20:01:03.584-04:00  INFO 20912 --- [gestionestado] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-07-05T20:01:03.716-04:00  INFO 20912 --- [gestionestado] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-07-05T20:01:04.279-04:00  INFO 20912 --- [gestionestado] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-05T20:01:04.359-04:00  WARN 20912 --- [gestionestado] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-05T20:01:04.390-04:00  INFO 20912 --- [gestionestado] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:66ed65c5-f685-424c-b1aa-5e21e254a2a6]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 66ED65C5-F685-424C-B1AA-5E21E254A2A6/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-05T20:01:05.327-04:00  INFO 20912 --- [gestionestado] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-05T20:01:05.386-04:00  INFO 20912 --- [gestionestado] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-05T20:01:05.509-04:00  INFO 20912 --- [gestionestado] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-05T20:01:05.741-04:00  INFO 20912 --- [gestionestado] [main] c.j.g.repository.EstadoRepositoryTest    : Started EstadoRepositoryTest in 3.258 seconds (process running for 10.166)
+2026-07-05T20:01:06.802-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Actualizando estado ID: 1
+2026-07-05T20:01:06.813-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Creando estado: 'En Camino'
+2026-07-05T20:01:06.814-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado creado. ID: 1
+2026-07-05T20:01:06.824-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Buscando estado con ID: 1
+2026-07-05T20:01:06.830-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Creando estado: 'En Camino'
+2026-07-05T20:01:06.830-04:00  WARN 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado duplicado: 'En Camino'
+2026-07-05T20:01:06.833-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Consultando lista completa de estados
+2026-07-05T20:01:06.849-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Buscando estado ID: 1 con sus envíos
+2026-07-05T20:01:06.850-04:00  WARN 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : ms-envio no disponible | Status: 503 | Se retorna lista vacía
+2026-07-05T20:01:06.850-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado 'En Camino' tiene 0 envíos asociados
+2026-07-05T20:01:06.853-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Buscando estado ID: 1 con sus envíos
+2026-07-05T20:01:06.854-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado 'En Camino' tiene 1 envíos asociados
+2026-07-05T20:01:06.856-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Consultando lista completa de estados
+2026-07-05T20:01:06.859-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Actualizando estado ID: 1
+2026-07-05T20:01:06.860-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado ID 1 actualizado a 'Entregado'
+2026-07-05T20:01:06.862-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Actualizando estado ID: 99
+2026-07-05T20:01:06.862-04:00  WARN 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado inexistente ID: 99
+2026-07-05T20:01:06.865-04:00  INFO 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Buscando estado con ID: 99
+2026-07-05T20:01:06.865-04:00  WARN 20912 --- [gestionestado] [main] c.j.gestionestado.Service.EstadoService  : Estado con ID 99 no existe
+2026-07-05T20:01:06.886-04:00  INFO 20912 --- [gestionestado] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'

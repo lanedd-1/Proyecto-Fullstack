@@ -1,4 +1,4 @@
-package com.joyeria.gestionestado.service;
+package com.joyeria.gestionestado.Service;
 
 import java.util.List;
 import java.util.Optional;

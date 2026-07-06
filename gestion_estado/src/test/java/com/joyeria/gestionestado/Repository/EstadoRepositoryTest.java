@@ -1,4 +1,4 @@
-package com.joyeria.gestionestado.repository;
+package com.joyeria.gestionestado.Repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

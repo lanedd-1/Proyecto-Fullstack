@@ -1,4 +1,4 @@
-package com.joyeria.gestion_configuracion.repository;
+package com.joyeria.gestion_configuracion.Repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

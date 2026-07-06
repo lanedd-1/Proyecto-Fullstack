@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.semestral.gestion_direccion.GestionDireccionApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in com.semestral.gestion_direccion.GestionDireccionApplicationTests

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.semestral.gestion_usuarios.controller.RolControllerTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.095 s -- in com.semestral.gestion_usuarios.controller.RolControllerTest

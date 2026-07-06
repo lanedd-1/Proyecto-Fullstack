@@ -1,0 +1,51 @@
+2026-07-05T20:09:22.024-04:00  INFO 15668 --- [ventas] [main] c.s.venta.controller.ControllerTest      : Starting ControllerTest using Java 21.0.10 with PID 15668 (started by helss in C:\Users\helss\Documents\GitHub\Proyecto-Fullstack\venta)
+2026-07-05T20:09:22.026-04:00  INFO 15668 --- [ventas] [main] c.s.venta.controller.ControllerTest      : No active profile set, falling back to 1 default profile: "default"
+2026-07-05T20:09:26.161-04:00  INFO 15668 --- [ventas] [main] c.s.venta.controller.ControllerTest      : Started ControllerTest in 4.717 seconds (process running for 7.094)
+2026-07-05T20:09:27.133-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Validacion fallida - POST /api/ventas/detalles/crear - Errores: [Campo 'ventaId': La ventaId es obligatoria (valor: 'null')]
+2026-07-05T20:09:27.191-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Recurso no encontrado - Path: /api/ventas/detalles/999 | Mensaje: Recurso no encontrado con ID: 999
+2026-07-05T20:09:27.352-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Validacion fallida - POST /api/ventas/detalles/crear - Errores: [Campo 'productoId': El productoId es obligatorio (valor: 'null')]
+2026-07-05T20:09:27.390-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Validacion fallida - POST /api/ventas/detalles/crear - Errores: [Campo 'cantidad': La cantidad no puede estar vacia (valor: 'null')]
+2026-07-05T20:09:27.475-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Validacion fallida - PUT /api/ventas/detalles/1 - Errores: [Campo 'ventaId': La ventaId es obligatoria (valor: 'null')]
+2026-07-05T20:09:27.511-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Recurso no encontrado - Path: /api/ventas/detalles/999 | Mensaje: Recurso no encontrado con ID: 999
+2026-07-05T20:09:27.569-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Recurso no encontrado - Path: /api/ventas/ventas/999 | Mensaje: Recurso no encontrado con ID: 999
+2026-07-05T20:09:27.619-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Recurso no encontrado - Path: /api/ventas/detalles/999 | Mensaje: Recurso no encontrado con ID: 999
+2026-07-05T20:09:27.632-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Validacion fallida - POST /api/ventas/crear - Errores: [Campo 'fechaV': La fecha de venta no puede estar vacia (valor: 'null')]
+2026-07-05T20:09:27.645-04:00  WARN 15668 --- [ventas] [main] c.s.v.exception.GlobalExceptionHandler   : Validacion fallida - POST /api/ventas/crear - Errores: [Campo 'fechaV': La fecha de venta no puede estar vacia (valor: '')]
+2026-07-05T20:09:27.902-04:00  INFO 15668 --- [ventas] [main] c.s.v.repository.DetalleRepositoryTest   : Starting DetalleRepositoryTest using Java 21.0.10 with PID 15668 (started by helss in C:\Users\helss\Documents\GitHub\Proyecto-Fullstack\venta)
+2026-07-05T20:09:27.903-04:00  INFO 15668 --- [ventas] [main] c.s.v.repository.DetalleRepositoryTest   : The following 1 profile is active: "test"
+2026-07-05T20:09:29.083-04:00  INFO 15668 --- [ventas] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-07-05T20:09:29.202-04:00  INFO 15668 --- [ventas] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.12.Final
+2026-07-05T20:09:29.884-04:00  WARN 15668 --- [ventas] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-05T20:09:29.918-04:00  INFO 15668 --- [ventas] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:a394a4ef-0f09-42be-a876-809e79001096]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: A394A4EF-0F09-42BE-A876-809E79001096/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-05T20:09:31.137-04:00  INFO 15668 --- [ventas] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-05T20:09:31.666-04:00  INFO 15668 --- [ventas] [main] c.s.v.repository.DetalleRepositoryTest   : Started DetalleRepositoryTest in 3.848 seconds (process running for 12.598)
+2026-07-05T20:09:33.482-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Buscando venta con ID: 99
+2026-07-05T20:09:33.483-04:00  WARN 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Venta ID 99 no encontrada
+2026-07-05T20:09:33.489-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Buscando venta con ID: 999
+2026-07-05T20:09:33.489-04:00  WARN 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Venta ID 999 no encontrada
+2026-07-05T20:09:33.492-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Iniciando creación de nueva venta
+2026-07-05T20:09:33.492-04:00  WARN 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Error al parsear la fecha ingresada: fechaInvalida-date
+2026-07-05T20:09:33.495-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Iniciando creación de nueva venta
+2026-07-05T20:09:33.496-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Venta creada exitosamente con ID: 10
+2026-07-05T20:09:33.503-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Iniciando creación de nueva venta
+2026-07-05T20:09:33.503-04:00  WARN 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Error al parsear la fecha ingresada: 15-06-2024
+2026-07-05T20:09:33.505-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Iniciando creación de nueva venta
+2026-07-05T20:09:33.506-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Venta creada exitosamente con ID: 10
+2026-07-05T20:09:33.508-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Buscando venta con ID: 1
+2026-07-05T20:09:33.511-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Consultando todas las ventas
+2026-07-05T20:09:33.513-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Iniciando creación de nueva venta
+2026-07-05T20:09:33.516-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Consultando todas las ventas
+2026-07-05T20:09:33.518-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Consultando todas las ventas
+2026-07-05T20:09:33.522-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Iniciando creación de nueva venta
+2026-07-05T20:09:33.524-04:00  INFO 15668 --- [ventas] [main] c.semestral.venta.service.VentaService   : Buscando venta con ID: 1

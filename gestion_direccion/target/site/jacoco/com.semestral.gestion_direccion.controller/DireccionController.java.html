@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DireccionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.semestral.gestion_direccion.controller</a> &gt; <span class="el_source">DireccionController.java</span></div><h1>DireccionController.java</h1><pre class="source lang-java linenums">package com.semestral.gestion_direccion.controller;
+
+import com.semestral.gestion_direccion.dto.DireccionRequestDTO;
+import com.semestral.gestion_direccion.dto.DireccionResponseDTO;
+import com.semestral.gestion_direccion.service.DireccionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+
+<span class="fc" id="L24">@Slf4j</span>
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(&quot;/api/direcciones&quot;)
+@Tag(name = &quot;Direcciones&quot;, description = &quot;Operaciones CRUD para la gestión de las direcciones físicas de los usuarios&quot;)
+public class DireccionController {
+
+    private final DireccionService direccionService;
+
+    @Operation(
+        summary = &quot;Listar todas las direcciones&quot;,
+        description = &quot;Obtiene una lista completa de las direcciones registradas, incluyendo el nombre de su Comuna y Región.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = &quot;200&quot;,
+            description = &quot;Lista de direcciones retornada correctamente&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = DireccionResponseDTO.class))
+        )
+    })
+    @GetMapping
+    public ResponseEntity&lt;List&lt;DireccionResponseDTO&gt;&gt; getAll() {
+<span class="fc" id="L46">        log.info(&quot;[DireccionController] GET /api/direcciones&quot;);</span>
+<span class="fc" id="L47">        return ResponseEntity.ok(direccionService.findAll());</span>
+    }
+
+    @Operation(
+        summary = &quot;Obtener dirección por ID&quot;,
+        description = &quot;Busca y retorna los detalles de una dirección específica mediante su identificador.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Dirección encontrada&quot;, content = @Content(schema = @Schema(implementation = DireccionResponseDTO.class))),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Dirección no encontrada&quot;, content = @Content)
+    })
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;DireccionResponseDTO&gt; getById(
+        @Parameter(description = &quot;ID de la dirección&quot;, example = &quot;1&quot;, required = true)
+        @PathVariable Long id
+    ) {
+<span class="fc" id="L63">        log.info(&quot;[DireccionController] GET /api/direcciones/{}&quot;, id);</span>
+<span class="fc" id="L64">        return ResponseEntity.ok(direccionService.findByIdOrThrow(id));</span>
+    }
+
+    @Operation(
+        summary = &quot;Crear nueva dirección&quot;,
+        description = &quot;Registra una nueva dirección validando que el ID del Usuario y el ID del Estado existan en sus respectivos microservicios.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Dirección creada con éxito&quot;, content = @Content(schema = @Schema(implementation = DireccionResponseDTO.class))),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Error de validación en el cuerpo de la petición&quot;, content = @Content),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Usuario, Estado o Comuna no encontrados&quot;, content = @Content)
+    })
+    @PostMapping
+    public ResponseEntity&lt;DireccionResponseDTO&gt; create(
+        @Parameter(description = &quot;Objeto JSON con los datos de la nueva dirección&quot;, required = true)
+        @Valid @RequestBody DireccionRequestDTO req
+    ) {
+<span class="fc" id="L81">        log.info(&quot;[DireccionController] POST /api/direcciones&quot;);</span>
+<span class="fc" id="L82">        DireccionResponseDTO created = direccionService.create(req);</span>
+<span class="fc" id="L83">        return ResponseEntity.created(URI.create(&quot;/api/direcciones/&quot; + created.getIdDireccion())).body(created);</span>
+    }
+
+    @Operation(
+        summary = &quot;Actualizar dirección&quot;,
+        description = &quot;Modifica los datos de una dirección existente. Vuelve a validar dependencias externas si son modificadas.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Dirección actualizada correctamente&quot;, content = @Content(schema = @Schema(implementation = DireccionResponseDTO.class))),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Recurso no encontrado (Dirección, Comuna, Usuario o Estado)&quot;, content = @Content)
+    })
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;DireccionResponseDTO&gt; update(
+        @Parameter(description = &quot;ID de la dirección a actualizar&quot;, example = &quot;1&quot;, required = true)
+        @PathVariable Long id,
+        @Parameter(description = &quot;Datos modificados de la dirección&quot;, required = true)
+        @Valid @RequestBody DireccionRequestDTO req
+    ) {
+<span class="fc" id="L101">        log.info(&quot;[DireccionController] PUT /api/direcciones/{}&quot;, id);</span>
+<span class="fc" id="L102">        DireccionResponseDTO updated = direccionService.update(id, req);</span>
+<span class="fc" id="L103">        return ResponseEntity.ok(updated);</span>
+    }
+
+    @Operation(
+        summary = &quot;Eliminar dirección&quot;,
+        description = &quot;Borra físicamente una dirección de la base de datos.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Dirección eliminada correctamente (Sin contenido)&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Dirección a eliminar no encontrada&quot;, content = @Content)
+    })
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; delete(
+        @Parameter(description = &quot;ID de la dirección a eliminar&quot;, example = &quot;1&quot;, required = true)
+        @PathVariable Long id
+    ) {
+<span class="fc" id="L119">        log.info(&quot;[DireccionController] DELETE /api/direcciones/{}&quot;, id);</span>
+<span class="fc" id="L120">        direccionService.delete(id);</span>
+<span class="fc" id="L121">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

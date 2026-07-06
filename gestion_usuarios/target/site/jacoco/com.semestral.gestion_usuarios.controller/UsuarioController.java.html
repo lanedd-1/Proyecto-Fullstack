@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.semestral.gestion_usuarios.controller</a> &gt; <span class="el_source">UsuarioController.java</span></div><h1>UsuarioController.java</h1><pre class="source lang-java linenums">package com.semestral.gestion_usuarios.controller;
+
+import com.semestral.gestion_usuarios.dto.UsuarioRequestDTO;
+import com.semestral.gestion_usuarios.dto.UsuarioResponseDTO;
+import com.semestral.gestion_usuarios.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+import java.util.HashMap;
+
+import java.net.URI;
+import java.util.List;
+
+@RestController
+<span class="fc" id="L26">@Slf4j</span>
+@RequiredArgsConstructor
+@Tag(name = &quot;Usuarios&quot;, description = &quot;Operaciones CRUD para la administración del ciclo de vida de los usuarios&quot;)
+@RequestMapping(&quot;/api/usuarios&quot;)
+public class UsuarioController {
+
+    private final UsuarioService usuarioService;
+
+    @Operation(
+        summary = &quot;Listar todos los usuarios&quot;,
+        description = &quot;Retorna una lista completa con todos los usuarios registrados, transformados a formato DTO seguro.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = &quot;200&quot;,
+            description = &quot;Lista de usuarios retornada correctamente&quot;,
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = UsuarioResponseDTO.class)
+            )
+        )
+    })
+    @GetMapping
+    public ResponseEntity&lt;List&lt;UsuarioResponseDTO&gt;&gt; getAll() {
+<span class="fc" id="L50">        log.info(&quot;[UsuarioController] GET /api/usuarios&quot;);</span>
+<span class="fc" id="L51">        return ResponseEntity.ok(usuarioService.getAllUsuarios());</span>
+    }
+    @Operation(
+        summary = &quot;Iniciar sesión de usuario&quot;,
+        description = &quot;Valida las credenciales de acceso de forma directa utilizando un mapa de parámetros, evitando la creación de DTOs adicionales.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = &quot;200&quot;,
+            description = &quot;Autenticación exitosa&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = &quot;400&quot;,
+            description = &quot;Petición incorrecta o parámetros faltantes&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = &quot;409&quot;,
+            description = &quot;Conflict: Credenciales incorrectas o usuario inexistente&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; login(
+        @Schema(
+            description = &quot;JSON con las llaves 'correo' y 'clave'&quot;, 
+            example = &quot;{\n  \&quot;correo\&quot;: \&quot;admin@JoyeriaEter.com\&quot;,\n  \&quot;clave\&quot;: \&quot;asdf1234!\&quot;\n}&quot;
+        )
+        @RequestBody Map&lt;String, String&gt; req
+    ) {
+<span class="fc" id="L82">        log.info(&quot;[UsuarioController] POST /api/usuarios/login recibido&quot;);</span>
+        
+<span class="fc" id="L84">        String correo = req.get(&quot;correo&quot;);</span>
+<span class="fc" id="L85">        String clave = req.get(&quot;clave&quot;);</span>
+        
+<span class="fc" id="L87">        usuarioService.loginDirecto(correo, clave);</span>
+        
+<span class="fc" id="L89">        Map&lt;String, String&gt; respuesta = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L90">        respuesta.put(&quot;mensaje&quot;, &quot;Sesión iniciada correctamente&quot;);</span>
+        
+<span class="fc" id="L92">        return ResponseEntity.ok(respuesta);</span>
+    }
+
+    @Operation(
+        summary = &quot;Obtener usuario por ID&quot;,
+        description = &quot;Busca en la base de datos el usuario con el ID indicado. Si no existe, retorna un error 404.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = &quot;200&quot;,
+            description = &quot;Usuario encontrado con éxito&quot;,
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = UsuarioResponseDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = &quot;404&quot;,
+            description = &quot;Usuario no encontrado en el sistema&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;UsuarioResponseDTO&gt; getById(
+        @Parameter(
+            description = &quot;ID del usuario a buscar&quot;,
+            example = &quot;1&quot;,
+            required = true
+        )
+        @PathVariable Long id
+    ) {
+<span class="fc" id="L123">        log.info(&quot;[UsuarioController] GET /api/usuarios/{}&quot;, id);</span>
+<span class="fc" id="L124">        return ResponseEntity.ok(usuarioService.findByIdOrThrow(id));</span>
+    }
+
+    @Operation(
+        summary = &quot;Crear nuevo usuario&quot;,
+        description = &quot;Registra un usuario en el sistema. Realiza validaciones internas de campos obligatorios, &quot; +
+                      &quot;verifica la existencia del Rol, consulta al microservicio externo (ms-estado) para validar el estado &quot; +
+                      &quot;y asegura que el correo electrónico no esté duplicado.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = &quot;201&quot;,
+            description = &quot;Usuario creado exitosamente&quot;,
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = UsuarioResponseDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = &quot;400&quot;,
+            description = &quot;Error de validación en los datos de entrada&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = &quot;404&quot;,
+            description = &quot;Rol o Estado especificado no encontrado&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = &quot;409&quot;,
+            description = &quot;Conflicto: El correo electrónico ya se encuentra registrado&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
+    @PostMapping
+    public ResponseEntity&lt;UsuarioResponseDTO&gt; create(
+        @Parameter(
+            description = &quot;Estructura JSON con los datos del nuevo usuario&quot;, 
+            required = true
+        )
+        @Valid @RequestBody UsuarioRequestDTO req
+    ) {
+<span class="fc" id="L166">        log.info(&quot;[UsuarioController] POST /api/usuarios con correo: {}&quot;, req.getCorreoU());</span>
+<span class="fc" id="L167">        UsuarioResponseDTO created = usuarioService.saveUsuario(req);</span>
+<span class="fc" id="L168">        return ResponseEntity.created(URI.create(&quot;/api/usuarios/&quot; + created.getIdU())).body(created);</span>
+    }
+
+    @Operation(
+        summary = &quot;Actualizar usuario por ID&quot;,
+        description = &quot;Modifica los datos de un usuario existente. Si se incluye una nueva contraseña, &quot; +
+                      &quot;esta será encriptada automáticamente. Valida también que el nuevo correo no choque con otro usuario.&quot;
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = &quot;200&quot;,
+            description = &quot;Usuario actualizado correctamente&quot;,
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = UsuarioResponseDTO.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = &quot;404&quot;,
+            description = &quot;Usuario, Rol o Estado no encontrado&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        ),
+        @ApiResponse(
+            responseCode = &quot;409&quot;,
+            description = &quot;Conflicto: El nuevo correo ya pertenece a otro usuario&quot;,
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+        )
+    })
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;UsuarioResponseDTO&gt; update(
+        @Parameter(
+            description = &quot;ID del usuario a actualizar&quot;, 
+            example = &quot;1&quot;, 
+            required = true
+        )
+        @PathVariable Long id,
+        @Parameter(
+            description = &quot;Estructura JSON con los campos modificados del usuario&quot;, 
+            required = true
+        )
+        @Valid @RequestBody UsuarioRequestDTO req
+    ) {
+<span class="fc" id="L210">        log.info(&quot;[UsuarioController] PUT /api/usuarios/{}&quot;, id);</span>
+<span class="fc" id="L211">        UsuarioResponseDTO updated = usuarioService.update(id, req);</span>
+<span class="fc" id="L212">        return ResponseEntity.ok(updated);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

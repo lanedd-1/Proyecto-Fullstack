@@ -1,4 +1,4 @@
-package com.joyeria.gestion_configuracion.service;
+package com.joyeria.gestion_configuracion.Service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

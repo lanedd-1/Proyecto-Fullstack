@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DireccionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.semestral.gestion_direccion.service</a> &gt; <span class="el_source">DireccionService.java</span></div><h1>DireccionService.java</h1><pre class="source lang-java linenums">package com.semestral.gestion_direccion.service;
+
+import com.semestral.gestion_direccion.exception.ExternalServiceException;
+import com.semestral.gestion_direccion.client.EstadoClient;
+import com.semestral.gestion_direccion.client.UsuarioClient;
+import com.semestral.gestion_direccion.dto.DireccionRequestDTO;
+import com.semestral.gestion_direccion.dto.DireccionResponseDTO;
+import com.semestral.gestion_direccion.exception.ResourceNotFoundException;
+import com.semestral.gestion_direccion.model.Comuna;
+import com.semestral.gestion_direccion.model.Direccion;
+import com.semestral.gestion_direccion.model.Region;
+import com.semestral.gestion_direccion.repository.ComunaRepository;
+import com.semestral.gestion_direccion.repository.DireccionRepository;
+import feign.FeignException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L24">@Slf4j</span>
+@RequiredArgsConstructor
+@Service
+public class DireccionService {
+    private final DireccionRepository direccionRep;
+    private final ComunaRepository comunaRep;
+    private final UsuarioClient usuarioClient;
+    private final EstadoClient estadoClient;
+
+    @Transactional(readOnly = true)
+    public List&lt;DireccionResponseDTO&gt; findAll() {
+<span class="fc" id="L35">        log.info(&quot;[DireccionService] Consultando todas las direcciones (con JOIN FETCH de Comuna y Región)&quot;);</span>
+<span class="fc" id="L36">        List&lt;Direccion&gt; list = direccionRep.findAllWithComunaAndRegion();</span>
+<span class="fc" id="L37">        return list.stream().map(this::toResponse).collect(Collectors.toList());</span>
+    }
+
+    @Transactional(readOnly = true)
+    public DireccionResponseDTO findByIdOrThrow(Long id) {
+<span class="fc" id="L42">        log.info(&quot;[DireccionService] Buscando dirección con ID: {}&quot;, id);</span>
+<span class="fc" id="L43">        Direccion d = direccionRep.findByIdWithComunaAndRegion(id)</span>
+<span class="fc" id="L44">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L45">                    log.warn(&quot;[DireccionService] Dirección ID {} no encontrada&quot;, id);</span>
+<span class="fc" id="L46">                    return new ResourceNotFoundException(id);</span>
+                });
+<span class="fc" id="L48">        return toResponse(d);</span>
+    }
+
+    @Transactional
+    public DireccionResponseDTO create(DireccionRequestDTO req) {
+<span class="fc" id="L53">        log.info(&quot;[DireccionService] Iniciando creación de dirección para el usuario ID: {}&quot;, req.getIdUsuario());</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (req.getIdComuna() == null) {</span>
+<span class="fc" id="L56">            log.warn(&quot;[DireccionService] Fallo al crear: El ID de la comuna es nulo&quot;);</span>
+<span class="fc" id="L57">            throw new RuntimeException(&quot;El id de comuna es obligatorio&quot;);</span>
+        }
+        
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (req.getIdUsuario() != null) {</span>
+            try {
+<span class="fc" id="L62">                usuarioClient.obtenerUsuarioPorId(req.getIdUsuario());</span>
+<span class="fc" id="L63">            } catch (FeignException.NotFound e) {</span>
+<span class="fc" id="L64">                log.warn(&quot;[DireccionService] Validación fallida: Usuario ID {} no existe en ms-usuarios&quot;, req.getIdUsuario());</span>
+<span class="fc" id="L65">                throw new ResourceNotFoundException(req.getIdUsuario());</span>
+<span class="fc" id="L66">            } catch (FeignException e) {</span>
+<span class="fc" id="L67">                log.error(&quot;[DireccionService] Error de comunicación con ms-usuarios al validar ID {}: {}&quot;, req.getIdUsuario(), e.getMessage());</span>
+<span class="fc" id="L68">                throw new ExternalServiceException(&quot;El microservicio de Usuarios no se encuentra disponible en este momento.&quot;);</span>
+<span class="fc" id="L69">            }</span>
+        }
+        
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (req.getIdEstado() != null) {</span>
+            try {
+<span class="fc" id="L74">                estadoClient.obtenerEstadoPorId(req.getIdEstado());</span>
+<span class="fc" id="L75">            } catch (FeignException.NotFound e) {</span>
+<span class="fc" id="L76">                log.warn(&quot;[DireccionService] Validación fallida: Estado ID {} no existe en ms-estados&quot;, req.getIdEstado());</span>
+<span class="fc" id="L77">                throw new ResourceNotFoundException(req.getIdEstado());</span>
+<span class="fc" id="L78">            } catch (FeignException e) {</span>
+<span class="fc" id="L79">                log.error(&quot;[DireccionService] Error al conectar con ms-estados: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L80">                throw new ExternalServiceException(&quot;El microservicio de Estados no se encuentra disponible en este momento.&quot;);</span>
+<span class="fc" id="L81">            }</span>
+        }
+
+<span class="fc" id="L84">        Comuna comuna = comunaRep.findById(req.getIdComuna())</span>
+<span class="fc" id="L85">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L86">                    log.warn(&quot;[DireccionService] Comuna ID {} no encontrada en la BD&quot;, req.getIdComuna());</span>
+<span class="fc" id="L87">                    return new ResourceNotFoundException(req.getIdComuna());</span>
+                });
+
+<span class="fc" id="L90">        Direccion d = new Direccion();</span>
+<span class="fc" id="L91">        d.setIdDireccion(null);</span>
+<span class="fc" id="L92">        d.setCalle(req.getCalle());</span>
+<span class="fc" id="L93">        d.setNumero(req.getNumero());</span>
+<span class="fc" id="L94">        d.setComuna(comuna);</span>
+<span class="fc" id="L95">        d.setIdUsuario(req.getIdUsuario());</span>
+<span class="fc" id="L96">        d.setIdEstado(req.getIdEstado());</span>
+
+<span class="fc" id="L98">        Direccion saved = direccionRep.save(d);</span>
+<span class="fc" id="L99">        log.info(&quot;[DireccionService] Dirección creada exitosamente con ID: {}&quot;, saved.getIdDireccion());</span>
+<span class="fc" id="L100">        return toResponse(saved);</span>
+    }
+
+    @Transactional
+    public DireccionResponseDTO update(Long id, DireccionRequestDTO req) {
+<span class="fc" id="L105">        log.info(&quot;[DireccionService] Iniciando actualización de la dirección ID: {}&quot;, id);</span>
+        
+<span class="fc" id="L107">        Direccion existing = direccionRep.findById(id)</span>
+<span class="fc" id="L108">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L109">                    log.warn(&quot;[DireccionService] Fallo al actualizar: Dirección ID {} no encontrada&quot;, id);</span>
+<span class="fc" id="L110">                    return new ResourceNotFoundException(id);</span>
+                });
+
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (req.getCalle() != null) existing.setCalle(req.getCalle());</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (req.getNumero() != null) existing.setNumero(req.getNumero());</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (req.getIdComuna() != null) {</span>
+<span class="fc" id="L117">            Comuna comuna = comunaRep.findById(req.getIdComuna())</span>
+<span class="fc" id="L118">                    .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L119">                        log.warn(&quot;[DireccionService] Fallo al actualizar: Comuna ID {} no encontrada&quot;, req.getIdComuna());</span>
+<span class="fc" id="L120">                        return new ResourceNotFoundException(req.getIdComuna());</span>
+                    });
+<span class="fc" id="L122">            existing.setComuna(comuna);</span>
+        }
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (req.getIdUsuario() != null) {</span>
+            try {
+<span class="fc" id="L127">                usuarioClient.obtenerUsuarioPorId(req.getIdUsuario());</span>
+<span class="fc" id="L128">            } catch (FeignException.NotFound e) {</span>
+<span class="fc" id="L129">                log.warn(&quot;[DireccionService] Fallo al actualizar: Usuario ID {} no existe en ms-usuarios&quot;, req.getIdUsuario());</span>
+<span class="fc" id="L130">                throw new ResourceNotFoundException(req.getIdUsuario());</span>
+<span class="fc" id="L131">            } catch (FeignException e) {</span>
+<span class="fc" id="L132">                log.error(&quot;[DireccionService] Error al conectar con ms-usuarios: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L133">                throw new ExternalServiceException(&quot;El microservicio de Usuarios no se encuentra disponible en este momento.&quot;);</span>
+<span class="fc" id="L134">            }</span>
+<span class="fc" id="L135">            existing.setIdUsuario(req.getIdUsuario());</span>
+        }
+        
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (req.getIdEstado() != null) {</span>
+            try {
+<span class="fc" id="L140">                estadoClient.obtenerEstadoPorId(req.getIdEstado());</span>
+<span class="fc" id="L141">            } catch (FeignException.NotFound e) {</span>
+<span class="fc" id="L142">                log.warn(&quot;[DireccionService] Fallo al actualizar: Estado ID {} no existe en ms-estados&quot;, req.getIdEstado());</span>
+<span class="fc" id="L143">                throw new ResourceNotFoundException(req.getIdEstado());</span>
+<span class="fc" id="L144">            } catch (FeignException e) {</span>
+<span class="fc" id="L145">                log.error(&quot;[DireccionService] Error de red con ms-estados: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L146">                throw new ExternalServiceException(&quot;El microservicio de Estados no se encuentra disponible en este momento.&quot;);</span>
+<span class="fc" id="L147">            }</span>
+<span class="fc" id="L148">            existing.setIdEstado(req.getIdEstado());</span>
+        }
+
+<span class="fc" id="L151">        Direccion saved = direccionRep.save(existing);</span>
+<span class="fc" id="L152">        log.info(&quot;[DireccionService] Dirección ID {} actualizada correctamente&quot;, saved.getIdDireccion());</span>
+<span class="fc" id="L153">        return toResponse(saved);</span>
+    }
+
+    @Transactional
+    public void delete(Long id) {
+<span class="fc" id="L158">        log.info(&quot;[DireccionService] Intentando eliminar la dirección ID: {}&quot;, id);</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (!direccionRep.existsById(id)) {</span>
+<span class="fc" id="L160">            log.warn(&quot;[DireccionService] Intento de eliminar ID inexistente: {}&quot;, id);</span>
+<span class="fc" id="L161">            throw new ResourceNotFoundException(id);</span>
+        }
+<span class="fc" id="L163">        direccionRep.deleteById(id);</span>
+<span class="fc" id="L164">        log.info(&quot;[DireccionService] Dirección ID {} eliminada correctamente&quot;, id);</span>
+<span class="fc" id="L165">    }</span>
+
+    private DireccionResponseDTO toResponse(Direccion d) {
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (d == null) return null;</span>
+<span class="fc" id="L169">        String nombreComuna = null;</span>
+<span class="fc" id="L170">        String nombreRegion = null;</span>
+
+<span class="fc" id="L172">        Comuna c = d.getComuna();</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (c != null) {</span>
+<span class="fc" id="L174">            nombreComuna = c.getNombreC();</span>
+<span class="fc" id="L175">            Region r = c.getRegion();</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">            if (r != null) nombreRegion = r.getNombreRegion();</span>
+        }
+
+<span class="fc" id="L179">        return new DireccionResponseDTO(</span>
+<span class="fc" id="L180">                d.getIdDireccion(),</span>
+<span class="fc" id="L181">                d.getCalle(),</span>
+<span class="fc" id="L182">                d.getNumero(),</span>
+                nombreComuna,
+                nombreRegion,
+<span class="fc" id="L185">                d.getIdUsuario(),  </span>
+<span class="fc" id="L186">                d.getIdEstado()    </span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

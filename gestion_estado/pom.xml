@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.semestral</groupId>
-	<artifactId>inventario</artifactId>
+	<artifactId>gestion_estado</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>

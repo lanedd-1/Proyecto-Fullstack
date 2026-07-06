@@ -1,0 +1,6 @@
+com\semestral\gestion_direccion\repository\RegionRepositoryTest.class
+com\semestral\gestion_direccion\repository\DireccionRepositoryTest.class
+com\semestral\gestion_direccion\repository\ComunaRepositoryTest.class
+com\semestral\gestion_direccion\service\DireccionServiceTest.class
+com\semestral\gestion_direccion\controller\DireccionControllerTest.class
+com\semestral\gestion_direccion\GestionDireccionApplicationTests.class

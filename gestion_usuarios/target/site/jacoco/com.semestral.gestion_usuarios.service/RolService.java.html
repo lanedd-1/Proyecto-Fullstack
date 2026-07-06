@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RolService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.semestral.gestion_usuarios.service</a> &gt; <span class="el_source">RolService.java</span></div><h1>RolService.java</h1><pre class="source lang-java linenums">package com.semestral.gestion_usuarios.service;
+
+import com.semestral.gestion_usuarios.model.Rol;
+import com.semestral.gestion_usuarios.repository.RolRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+<span class="fc" id="L13">@Slf4j </span>
+@Service
+@RequiredArgsConstructor
+public class RolService {
+
+    private final RolRepository rolRep;
+
+    public List&lt;Rol&gt; findAll() {
+<span class="fc" id="L21">        log.info(&quot;[RolService] Consultando todos los roles registrados&quot;);</span>
+<span class="fc" id="L22">        return rolRep.findAll();</span>
+    }
+
+    public Rol getById(Long id) {
+<span class="fc" id="L26">        log.info(&quot;[RolService] Buscando rol con ID: {}&quot;, id);</span>
+        
+<span class="fc" id="L28">        return rolRep.findById(id)</span>
+<span class="fc" id="L29">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L30">                    log.warn(&quot;[RolService] Rol ID {} no encontrado en la base de datos&quot;, id);</span>
+<span class="fc" id="L31">                    return new RuntimeException(&quot;Rol no encontrado: &quot; + id); </span>
+                });
+    }
+
+    public Optional&lt;Rol&gt; findByNombre(String nombre) {
+<span class="fc" id="L36">        log.debug(&quot;[RolService] Buscando rol por nombre exacto: {}&quot;, nombre);</span>
+<span class="fc" id="L37">        return rolRep.findByNombreRol(nombre);</span>
+    }
+
+    public Optional&lt;Rol&gt; findByNombreIgnoreCase(String nombre) {
+<span class="fc" id="L41">        log.debug(&quot;[RolService] Buscando rol por nombre (ignorando mayúsculas/minúsculas): {}&quot;, nombre);</span>
+<span class="fc" id="L42">        return rolRep.findByNombreRolIgnoreCase(nombre);</span>
+    }
+
+    public Rol create(Rol rol) {
+<span class="fc" id="L46">        log.info(&quot;[RolService] Intentando crear nuevo rol: {}&quot;, rol.getNombreRol());</span>
+        
+        // Evita duplicados por nombre (case-insensitive)
+<span class="fc" id="L49">        rolRep.findByNombreRolIgnoreCase(rol.getNombreRol())</span>
+<span class="fc" id="L50">                .ifPresent(r -&gt; {</span>
+<span class="fc" id="L51">                    log.warn(&quot;[RolService] Creación fallida: El rol '{}' ya existe&quot;, rol.getNombreRol());</span>
+<span class="fc" id="L52">                    throw new DataIntegrityViolationException(&quot;Rol ya existe: &quot; + rol.getNombreRol());</span>
+                });
+                
+<span class="fc" id="L55">        Rol guardado = rolRep.save(rol);</span>
+<span class="fc" id="L56">        log.info(&quot;[RolService] Rol '{}' creado exitosamente con ID: {}&quot;, guardado.getNombreRol(), guardado.getIdRol());</span>
+<span class="fc" id="L57">        return guardado;</span>
+    }
+
+    public Rol update(Long id, Rol rol) {
+<span class="fc" id="L61">        log.info(&quot;[RolService] Iniciando actualización para el rol ID: {}&quot;, id);</span>
+        
+<span class="fc" id="L63">        Rol existing = rolRep.findById(id)</span>
+<span class="fc" id="L64">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L65">                    log.warn(&quot;[RolService] Fallo al actualizar: Rol ID {} no encontrado&quot;, id);</span>
+<span class="fc" id="L66">                    return new RuntimeException(&quot;Rol no encontrado: &quot; + id);</span>
+                });
+                
+<span class="fc" id="L69">        String nuevoNombre = rol.getNombreRol();</span>
+<span class="fc bfc" id="L70" title="All 4 branches covered.">        if (nuevoNombre != null &amp;&amp; !nuevoNombre.equalsIgnoreCase(existing.getNombreRol())) {</span>
+<span class="fc" id="L71">            rolRep.findByNombreRolIgnoreCase(nuevoNombre)</span>
+<span class="fc" id="L72">                    .ifPresent(r -&gt; {</span>
+<span class="fc" id="L73">                        log.warn(&quot;[RolService] Choque de nombres: ya existe otro rol llamado '{}'&quot;, nuevoNombre);</span>
+<span class="fc" id="L74">                        throw new DataIntegrityViolationException(&quot;Otro rol con ese nombre ya existe: &quot; + nuevoNombre);</span>
+                    });
+<span class="fc" id="L76">            existing.setNombreRol(nuevoNombre);</span>
+        }
+        
+<span class="fc" id="L79">        Rol actualizado = rolRep.save(existing);</span>
+<span class="fc" id="L80">        log.info(&quot;[RolService] Rol ID {} actualizado correctamente a '{}'&quot;, id, actualizado.getNombreRol());</span>
+<span class="fc" id="L81">        return actualizado;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

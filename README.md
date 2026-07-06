@@ -3,8 +3,9 @@
 
 ## INTEGRANTES
 NOMBRES INTEGRANTES (EQUIPO 12)//
-
-Matias Olavarria
+- `Matias Olavarria`:
+- `Renata Valdes`:
+- `Jose Recabarren`:
 Renata Valdes
 Jose Recabarren
 
